@@ -50,7 +50,7 @@ class EmvBalanceEnquiryResponse {
 @HostApi()
 abstract class EmvApi {
   @async
-  EmvBalanceEnquiryResponse enquireBalance(String tID);
+  EmvBalanceEnquiryResponse enquireBalance(String tID, String accountType);
   @async
   bool performKeyExchange();
 }

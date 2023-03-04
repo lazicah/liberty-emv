@@ -127,12 +127,12 @@ class EmvApi {
 
   static const MessageCodec<Object?> codec = _EmvApiCodec();
 
-  Future<EmvBalanceEnquiryResponse> enquireBalance(String arg_tID) async {
+  Future<EmvBalanceEnquiryResponse> enquireBalance(String arg_tID, String arg_accountType) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.EmvApi.enquireBalance', codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_tID]) as List<Object?>?;
+        await channel.send(<Object?>[arg_tID, arg_accountType]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',

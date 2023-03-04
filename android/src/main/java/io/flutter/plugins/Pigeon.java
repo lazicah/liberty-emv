@@ -383,7 +383,7 @@ public class Pigeon {
   /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
   public interface EmvApi {
 
-    void enquireBalance(@NonNull String tID, Result<EmvBalanceEnquiryResponse> result);
+    void enquireBalance(@NonNull String tID, @NonNull String accountType, Result<EmvBalanceEnquiryResponse> result);
 
     void performKeyExchange(Result<Boolean> result);
 
@@ -408,6 +408,10 @@ public class Pigeon {
                   if (tIDArg == null) {
                     throw new NullPointerException("tIDArg unexpectedly null.");
                   }
+                  String accountTypeArg = (String) args.get(1);
+                  if (accountTypeArg == null) {
+                    throw new NullPointerException("accountTypeArg unexpectedly null.");
+                  }
                   Result<EmvBalanceEnquiryResponse> resultCallback = 
                       new Result<EmvBalanceEnquiryResponse>() {
                         public void success(EmvBalanceEnquiryResponse result) {
@@ -421,7 +425,7 @@ public class Pigeon {
                         }
                       };
 
-                  api.enquireBalance(tIDArg, resultCallback);
+                  api.enquireBalance(tIDArg, accountTypeArg, resultCallback);
                 } catch (Error | RuntimeException exception) {
                   ArrayList<Object> wrappedError = wrapError(exception);
                   reply.reply(wrappedError);

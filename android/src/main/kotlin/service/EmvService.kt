@@ -21,10 +21,9 @@ class EmvService(private val context: Context) : Pigeon.EmvApi {
 
     var activityBinding: ActivityPluginBinding? = null
     private var resultCallback: Pigeon.Result<Pigeon.EmvBalanceEnquiryResponse>? = null
-
-
     override fun enquireBalance(
         tID: String,
+        accountType: String,
         result: Pigeon.Result<Pigeon.EmvBalanceEnquiryResponse>?
     ) {
         resultCallback = result
@@ -37,6 +36,7 @@ class EmvService(private val context: Context) : Pigeon.EmvApi {
         }
     }
 
+
     override fun performKeyExchange(result: Pigeon.Result<Boolean>?) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
@@ -47,15 +47,18 @@ class EmvService(private val context: Context) : Pigeon.EmvApi {
 
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
+        Log.d(TAG, "onActivityResult: $resultCode")
         if (data?.hasExtra("transactionResult") == true) {
             return handleBalanceEnquiryResponse(data, resultCode)
         }
-        Log.d(TAG, "onActivityResult: $resultCode")
         Log.d(ContentValues.TAG, "onActivityResult: $data")
         return false
     }
 
     private fun handleBalanceEnquiryResponse(data: Intent?, resultCode: Int): Boolean {
+
+        Log.d(TAG, "handleBalanceEnquiryResponse: $resultCode")
+
         if (resultCode == ActivityRequestAndResultCodes.TRANSACTION_SUCCESS_REQUEST_CODE) {
             val balanceEnquiryData =
                 data?.getParcelableExtra<BalanceEnquiryResponseData?>("transactionResult")
