@@ -25,8 +25,8 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    // _emvApi.enquireBalance("fdfd");
-    final res = await _emvApi.performKeyExchange();
+    final res = await _emvApi.enquireBalance("fdf", "SAVINGS");
+    // final res = await _emvApi.performKeyExchange();
     print(res);
   }
 

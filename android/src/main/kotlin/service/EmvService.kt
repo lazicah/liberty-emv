@@ -5,9 +5,12 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.liberty.emv.liberty_emv.Constants
 import com.libertyPay.horizonSDK.LibertyHorizonSDK
+import com.libertyPay.horizonSDK.common.AccountTypes
 import com.libertyPay.horizonSDK.common.ActivityRequestAndResultCodes
 import com.libertyPay.horizonSDK.common.PosTransactionException
+import com.libertyPay.horizonSDK.domain.AccountType
 import com.libertypay.posclient.api.models.response.BalanceEnquiryResponseData
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugins.Pigeon
@@ -27,11 +30,13 @@ class EmvService(private val context: Context) : Pigeon.EmvApi {
         result: Pigeon.Result<Pigeon.EmvBalanceEnquiryResponse>?
     ) {
         resultCallback = result
+        val accountTypeEnum = Constants.transactionTypeMap[accountType] ?: AccountTypes.DEFAULT_UNSPECIFIED
 
         activityBinding?.activity?.let {
             LibertyHorizonSDK.startBalanceEnquiryDialogActivity(
-                tID,
-                activity = it
+                activity = it,
+                accountType = accountTypeEnum,
+                terminalId = tID,
             )
         }
     }
@@ -59,7 +64,7 @@ class EmvService(private val context: Context) : Pigeon.EmvApi {
 
         Log.d(TAG, "handleBalanceEnquiryResponse: $resultCode")
 
-        if (resultCode == ActivityRequestAndResultCodes.TRANSACTION_SUCCESS_REQUEST_CODE) {
+        if (resultCode == ActivityRequestAndResultCodes.TRANSACTION_SUCCESS_RESULT_CODE) {
             val balanceEnquiryData =
                 data?.getParcelableExtra<BalanceEnquiryResponseData?>("transactionResult")
 
@@ -71,7 +76,7 @@ class EmvService(private val context: Context) : Pigeon.EmvApi {
         }
 
 
-        if (resultCode == ActivityRequestAndResultCodes.TRANSACTION_FAILURE_REQUEST_CODE) {
+        if (resultCode == ActivityRequestAndResultCodes.TRANSACTION_FAILURE_RESULT_CODE) {
             val posTransactionResponse =
                 data?.getParcelableExtra<PosTransactionException>("transactionFailure")
 
