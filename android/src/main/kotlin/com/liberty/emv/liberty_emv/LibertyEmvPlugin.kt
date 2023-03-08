@@ -2,6 +2,7 @@ package com.liberty.emv.liberty_emv
 
 import android.content.Intent
 import androidx.annotation.NonNull
+import com.libertyPay.horizonSDK.LibertyHorizonSDK
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -35,6 +36,7 @@ class LibertyEmvPlugin : FlutterPlugin, ActivityAware, MethodCallHandler,
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         emvService.activityBinding = binding
+        LibertyHorizonSDK.initialize(binding.activity)
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
