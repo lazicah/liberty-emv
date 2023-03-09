@@ -3,6 +3,8 @@ package com.liberty.emv.liberty_emv
 import android.content.Intent
 import androidx.annotation.NonNull
 import com.libertyPay.horizonSDK.LibertyHorizonSDK
+import com.libertyPay.horizonSDK.Preferences
+import com.libertypay.posclient.PosRemoteClient
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -13,6 +15,7 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugins.Pigeon
 import service.EmvService
+import timber.log.Timber
 
 /** LibertyEmvPlugin */
 class LibertyEmvPlugin : FlutterPlugin, ActivityAware, MethodCallHandler,
@@ -36,7 +39,9 @@ class LibertyEmvPlugin : FlutterPlugin, ActivityAware, MethodCallHandler,
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         emvService.activityBinding = binding
-        LibertyHorizonSDK.initialize(binding.activity)
+        if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
+        PosRemoteClient.initPosApi()
+        Preferences.init(binding.activity)
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
