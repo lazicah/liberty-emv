@@ -16,8 +16,10 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugins.Pigeon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import service.dto.PigeonResponseDto
+import timber.log.Timber
 import kotlin.Exception
 
 class EmvService(private val context: Context) : Pigeon.EmvApi {
@@ -29,15 +31,22 @@ class EmvService(private val context: Context) : Pigeon.EmvApi {
         accountType: String,
         result: Pigeon.Result<Pigeon.EmvBalanceEnquiryResponse>?
     ) {
-        resultCallback = result
-        val accountTypeEnum = Constants.transactionTypeMap[accountType] ?: AccountTypes.DEFAULT_UNSPECIFIED
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            LibertyHorizonSDK.initialize(activityBinding!!.activity)
 
-        activityBinding?.activity?.let {
-            LibertyHorizonSDK.startBalanceEnquiryDialogActivity(
-                activity = it,
-                accountType = accountTypeEnum,
-                terminalId = tID,
-            )
+            delay(1000)
+            resultCallback = result
+            val accountTypeEnum =
+                Constants.transactionTypeMap[accountType] ?: AccountTypes.DEFAULT_UNSPECIFIED
+
+            activityBinding?.activity?.let {
+                LibertyHorizonSDK.startBalanceEnquiryDialogActivity(
+                    activity = it,
+                    accountType = accountTypeEnum,
+                    terminalId = tID,
+                )
+            }
         }
     }
 
@@ -52,40 +61,10 @@ class EmvService(private val context: Context) : Pigeon.EmvApi {
 
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-        Log.d(TAG, "onActivityResult: $resultCode")
-        if (data?.hasExtra("transactionResult") == true) {
-            return handleBalanceEnquiryResponse(data, resultCode)
-        }
-        Log.d(ContentValues.TAG, "onActivityResult: $data")
+        val handler = ActivityResultHandler(resultCallback)
+        data?.let { return handler(it, resultCode) }
         return false
     }
 
-    private fun handleBalanceEnquiryResponse(data: Intent?, resultCode: Int): Boolean {
-
-        Log.d(TAG, "handleBalanceEnquiryResponse: $resultCode")
-
-        if (resultCode == ActivityRequestAndResultCodes.TRANSACTION_SUCCESS_RESULT_CODE) {
-            val balanceEnquiryData =
-                data?.getParcelableExtra<BalanceEnquiryResponseData?>("transactionResult")
-
-            balanceEnquiryData?.let {
-                val emvBalanceResponse =
-                    PigeonResponseDto.toBalanceEnquiryResponse(it)
-                resultCallback?.success(emvBalanceResponse)
-            }
-        }
-
-
-        if (resultCode == ActivityRequestAndResultCodes.TRANSACTION_FAILURE_RESULT_CODE) {
-            val posTransactionResponse =
-                data?.getParcelableExtra<PosTransactionException>("transactionFailure")
-
-            posTransactionResponse?.let {
-                resultCallback?.error(Exception(it.errorMessage))
-            }
-        }
-
-        return true
-    }
 
 }
