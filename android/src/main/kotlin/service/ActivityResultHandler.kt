@@ -1,6 +1,7 @@
 package service
 
 import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.util.Log
 import com.libertyPay.horizonSDK.common.ActivityRequestAndResultCodes
@@ -24,6 +25,7 @@ class ActivityResultHandler(
     private fun handleBalanceEnquiryResponse(data: Intent?, resultCode: Int): Boolean {
         val balanceEnquiryData =
             data?.getParcelableExtra<BalanceEnquiryResponseData?>(TransactionIntentExtras.TRANSACTION_RESULT)
+
 
         balanceEnquiryData?.let {
             val emvBalanceResponse = PigeonResponseDto.toBalanceEnquiryResponse(it)

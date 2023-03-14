@@ -28,6 +28,7 @@ class _MyAppState extends State<MyApp> {
     final res = await _emvApi.enquireBalance("fdf", "SAVINGS");
     // final res = await _emvApi.performKeyExchange();
     print(res);
+    print(res.amount);
   }
 
   @override
@@ -41,7 +42,15 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Column(
+            children: [
+              Text('Running on: $_platformVersion\n'),
+              ElevatedButton(
+                onPressed: () => _emvApi.performKeyExchange(),
+                child: Text("Key Exchange"),
+              ),
+            ],
+          ),
         ),
       ),
     );

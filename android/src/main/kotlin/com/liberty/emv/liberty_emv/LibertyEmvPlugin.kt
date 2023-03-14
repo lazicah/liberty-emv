@@ -1,6 +1,8 @@
 package com.liberty.emv.liberty_emv
 
+import android.content.ContentValues.TAG
 import android.content.Intent
+import android.util.Log
 import androidx.annotation.NonNull
 import com.libertyPay.horizonSDK.LibertyHorizonSDK
 import com.libertyPay.horizonSDK.Preferences
@@ -34,6 +36,7 @@ class LibertyEmvPlugin : FlutterPlugin, ActivityAware, MethodCallHandler,
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
+        Log.d(TAG, "onActivityResult:$resultCode ")
         return emvService.onActivityResult(requestCode, resultCode, data)
     }
 

@@ -2,7 +2,7 @@
     package="com.liberty.emv.liberty_emv_example"
     xmlns:tools="http://schemas.android.com/tools">
    <application
-       android:name="com.liberty.emv.liberty_emv.Application"
+       android:name="com.pos.k11.utils.MyApplication"
        android:label="liberty_emv_example"
        tools:replace="android:label,name"
        android:icon="@mipmap/ic_launcher">
