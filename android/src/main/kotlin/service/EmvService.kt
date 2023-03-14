@@ -10,7 +10,9 @@ import com.libertyPay.horizonSDK.LibertyHorizonSDK
 import com.libertyPay.horizonSDK.common.AccountTypes
 import com.libertyPay.horizonSDK.common.ActivityRequestAndResultCodes
 import com.libertyPay.horizonSDK.common.PosTransactionException
+import com.libertyPay.horizonSDK.common.TransactionIntentExtras
 import com.libertyPay.horizonSDK.domain.AccountType
+import com.libertypay.posclient.api.Environment
 import com.libertypay.posclient.api.models.response.BalanceEnquiryResponseData
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugins.Pigeon
@@ -31,23 +33,33 @@ class EmvService(private val context: Context) : Pigeon.EmvApi {
         accountType: String,
         result: Pigeon.Result<Pigeon.EmvBalanceEnquiryResponse>?
     ) {
-        val scope = CoroutineScope(Dispatchers.IO)
-        scope.launch {
-            LibertyHorizonSDK.initialize(activityBinding!!.activity)
+//        val scope = CoroutineScope(Dispatchers.IO)
+//        scope.launch {
+//            LibertyHorizonSDK.initialize(activityBinding!!.activity, environment = Environment.Live)
+//
+//            delay(1000)
+//            resultCallback = result
+//            val accountTypeEnum =
+//                Constants.transactionTypeMap[accountType] ?: AccountTypes.DEFAULT_UNSPECIFIED
+//
+//            activityBinding?.activity?.let {
+//                LibertyHorizonSDK.startBalanceEnquiryDialogActivity(
+//                    activity = it,
+//                    accountType = accountTypeEnum,
+//                    terminalId = tID,
+//                )
+//            }
+//        }
 
-            delay(1000)
-            resultCallback = result
-            val accountTypeEnum =
-                Constants.transactionTypeMap[accountType] ?: AccountTypes.DEFAULT_UNSPECIFIED
-
-            activityBinding?.activity?.let {
-                LibertyHorizonSDK.startBalanceEnquiryDialogActivity(
-                    activity = it,
-                    accountType = accountTypeEnum,
-                    terminalId = tID,
-                )
-            }
-        }
+        resultCallback = result
+        val response = BalanceEnquiryResponseData(
+            responseCode = "00",
+            amount = "100",
+            responseMessage = "success"
+        )
+        val intent = Intent()
+        intent.putExtra(TransactionIntentExtras.TRANSACTION_RESULT, response)
+        onActivityResult(32, ActivityRequestAndResultCodes.TRANSACTION_SUCCESS_RESULT_CODE, intent)
     }
 
 
@@ -61,6 +73,7 @@ class EmvService(private val context: Context) : Pigeon.EmvApi {
 
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
+        Log.d(TAG, "onActivityResult: $resultCode")
         val handler = ActivityResultHandler(resultCallback)
         data?.let { return handler(it, resultCode) }
         return false
