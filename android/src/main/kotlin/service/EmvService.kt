@@ -11,6 +11,7 @@ import com.libertyPay.horizonSDK.common.AccountTypes
 import com.libertyPay.horizonSDK.common.ActivityRequestAndResultCodes
 import com.libertyPay.horizonSDK.common.PosTransactionException
 import com.libertyPay.horizonSDK.domain.AccountType
+import com.libertypay.posclient.api.Environment
 import com.libertypay.posclient.api.models.response.BalanceEnquiryResponseData
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.PluginRegistry
