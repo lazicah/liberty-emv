@@ -13,6 +13,7 @@ import com.libertyPay.horizonSDK.common.PosTransactionException
 import com.libertyPay.horizonSDK.domain.AccountType
 import com.libertypay.posclient.api.models.response.BalanceEnquiryResponseData
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
+import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugins.Pigeon
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,10 +23,18 @@ import service.dto.PigeonResponseDto
 import timber.log.Timber
 import kotlin.Exception
 
-class EmvService(private val context: Context) : Pigeon.EmvApi {
+class EmvService(private val context: Context) : Pigeon.EmvApi,
+    PluginRegistry.ActivityResultListener {
+
 
     var activityBinding: ActivityPluginBinding? = null
     private var resultCallback: Pigeon.Result<Pigeon.EmvBalanceEnquiryResponse>? = null
+
+    fun initialize(binding: ActivityPluginBinding) {
+        activityBinding = binding
+        binding.addActivityResultListener(this)
+    }
+
     override fun enquireBalance(
         tID: String,
         accountType: String,
@@ -33,7 +42,7 @@ class EmvService(private val context: Context) : Pigeon.EmvApi {
     ) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
-            LibertyHorizonSDK.initialize(activityBinding!!.activity)
+            LibertyHorizonSDK.initialize(activityBinding!!.activity, environment = Environment.Live)
 
             delay(1000)
             resultCallback = result
@@ -48,6 +57,7 @@ class EmvService(private val context: Context) : Pigeon.EmvApi {
                 )
             }
         }
+
     }
 
 
@@ -60,7 +70,7 @@ class EmvService(private val context: Context) : Pigeon.EmvApi {
     }
 
 
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
         val handler = ActivityResultHandler(resultCallback)
         data?.let { return handler(it, resultCode) }
         return false
