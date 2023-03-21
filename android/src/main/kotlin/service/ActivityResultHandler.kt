@@ -1,40 +1,62 @@
 package service
 
-import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.util.Log
 import com.libertyPay.horizonSDK.common.ActivityRequestAndResultCodes
-import com.libertyPay.horizonSDK.common.PosTransactionException
 import com.libertyPay.horizonSDK.common.TransactionIntentExtras
+import com.libertyPay.horizonSDK.domain.models.PosTransactionException
 import com.libertypay.posclient.api.models.response.BalanceEnquiryResponseData
+import com.libertypay.posclient.api.models.response.TransactionData
 import io.flutter.plugins.Pigeon
 import service.dto.PigeonResponseDto
 
 class ActivityResultHandler(
-    private val resultCallback: Pigeon.Result<Pigeon.EmvBalanceEnquiryResponse>?
+    private val resultCallback: Pigeon.Result<Pigeon.TransactionDataResponse>?
 ) {
 
-    private val functionMap = mapOf<Int, (data: Intent?, resultCode: Int) -> Boolean>(
-        ActivityRequestAndResultCodes.TRANSACTION_SUCCESS_RESULT_CODE to ::handleBalanceEnquiryResponse,
-        ActivityRequestAndResultCodes.TRANSACTION_FAILURE_RESULT_CODE to ::handleBalanceEnquiryFailure,
-        ActivityRequestAndResultCodes.KEY_EXCHANGE_FAILED_RESULT_CODE to ::handleKeyExchangeFailure,
-    )
+    private val functionMap =
+        mapOf<Int, (data: Intent?, resultCode: Int, requestCode: Int) -> Boolean>(
+            ActivityRequestAndResultCodes.TRANSACTION_SUCCESS_RESULT_CODE to ::handleSuccessResponse,
+            ActivityRequestAndResultCodes.TRANSACTION_FAILURE_RESULT_CODE to ::handleTransactionFailure,
+            ActivityRequestAndResultCodes.KEY_EXCHANGE_FAILED_RESULT_CODE to ::handleKeyExchangeFailure,
+        )
 
 
-    private fun handleBalanceEnquiryResponse(data: Intent?, resultCode: Int): Boolean {
-        val balanceEnquiryData =
-            data?.getParcelableExtra<BalanceEnquiryResponseData?>(TransactionIntentExtras.TRANSACTION_RESULT)
+    private fun handleSuccessResponse(data: Intent?, resultCode: Int, requestCode: Int): Boolean {
 
 
-        balanceEnquiryData?.let {
-            val emvBalanceResponse = PigeonResponseDto.toBalanceEnquiryResponse(it)
-            resultCallback?.success(emvBalanceResponse)
+
+        when (requestCode) {
+            ActivityRequestAndResultCodes.PURCHASE_RESULT_CODE -> {
+                val balanceEnquiryData =
+                    data?.getParcelableExtra<TransactionData?>(TransactionIntentExtras.TRANSACTION_RESULT)
+
+                balanceEnquiryData?.let {
+                    val emvResponse = PigeonResponseDto.toPurchaseResponse(it)
+                    resultCallback?.success(emvResponse)
+                }
+            }
+            else -> {
+                val balanceEnquiryData =
+                    data?.getParcelableExtra<BalanceEnquiryResponseData?>(TransactionIntentExtras.TRANSACTION_RESULT)
+
+                balanceEnquiryData?.let {
+                    val emvResponse = PigeonResponseDto.toBalanceEnquiryResponse(it)
+                    resultCallback?.success(emvResponse)
+                }
+
+            }
         }
         return true
     }
 
-    private fun handleBalanceEnquiryFailure(data: Intent?, resultCode: Int): Boolean {
+
+    private fun handleTransactionFailure(
+        data: Intent?,
+        resultCode: Int,
+        requestCode: Int
+    ): Boolean {
         val posTransactionResponse =
             data?.getParcelableExtra<PosTransactionException>(TransactionIntentExtras.TRANSACTION_FAILURE)
 
@@ -44,7 +66,11 @@ class ActivityResultHandler(
         return true
     }
 
-    private fun handleKeyExchangeFailure(data: Intent?, resultCode: Int): Boolean {
+    private fun handleKeyExchangeFailure(
+        data: Intent?,
+        resultCode: Int,
+        requestCode: Int
+    ): Boolean {
         val keyExchangeException =
             data?.getParcelableExtra<PosTransactionException>(TransactionIntentExtras.KEY_EXCHANGE_FAILURE)
 
@@ -54,9 +80,9 @@ class ActivityResultHandler(
         return true
     }
 
-    operator fun invoke(data: Intent?, resultCode: Int): Boolean {
+    operator fun invoke(data: Intent?, resultCode: Int, requestCode: Int): Boolean {
         val handlerFunction = functionMap[resultCode]
-        return handlerFunction?.invoke(data, resultCode) ?: false
+        return handlerFunction?.invoke(data, resultCode, requestCode) ?: false
     }
 
 }

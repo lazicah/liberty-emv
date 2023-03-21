@@ -1,2 +1,2 @@
 configurations.maybeCreate("default")
-artifacts.add("default", file('pos-SDK-0.2.2.aar'))
+artifacts.add("default", file('pos-SDK-0.3.0.aar'))

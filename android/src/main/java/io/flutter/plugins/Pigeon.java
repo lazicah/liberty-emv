@@ -33,7 +33,7 @@ public class Pigeon {
   }
 
   /** Generated class from Pigeon that represents data sent in messages. */
-  public static final class EmvBalanceEnquiryResponse {
+  public static final class TransactionDataResponse {
     private @Nullable String amount;
 
     public @Nullable String getAmount() {
@@ -274,8 +274,8 @@ public class Pigeon {
         return this;
       }
 
-      public @NonNull EmvBalanceEnquiryResponse build() {
-        EmvBalanceEnquiryResponse pigeonReturn = new EmvBalanceEnquiryResponse();
+      public @NonNull TransactionDataResponse build() {
+        TransactionDataResponse pigeonReturn = new TransactionDataResponse();
         pigeonReturn.setAmount(amount);
         pigeonReturn.setAuthorizationCode(authorizationCode);
         pigeonReturn.setCardExpiryDate(cardExpiryDate);
@@ -314,8 +314,8 @@ public class Pigeon {
       return toListResult;
     }
 
-    static @NonNull EmvBalanceEnquiryResponse fromList(@NonNull ArrayList<Object> list) {
-      EmvBalanceEnquiryResponse pigeonResult = new EmvBalanceEnquiryResponse();
+    static @NonNull TransactionDataResponse fromList(@NonNull ArrayList<Object> list) {
+      TransactionDataResponse pigeonResult = new TransactionDataResponse();
       Object amount = list.get(0);
       pigeonResult.setAmount((String) amount);
       Object authorizationCode = list.get(1);
@@ -363,7 +363,7 @@ public class Pigeon {
     protected Object readValueOfType(byte type, @NonNull ByteBuffer buffer) {
       switch (type) {
         case (byte) 128:
-          return EmvBalanceEnquiryResponse.fromList((ArrayList<Object>) readValue(buffer));
+          return TransactionDataResponse.fromList((ArrayList<Object>) readValue(buffer));
         default:
           return super.readValueOfType(type, buffer);
       }
@@ -371,9 +371,9 @@ public class Pigeon {
 
     @Override
     protected void writeValue(@NonNull ByteArrayOutputStream stream, Object value) {
-      if (value instanceof EmvBalanceEnquiryResponse) {
+      if (value instanceof TransactionDataResponse) {
         stream.write(128);
-        writeValue(stream, ((EmvBalanceEnquiryResponse) value).toList());
+        writeValue(stream, ((TransactionDataResponse) value).toList());
       } else {
         super.writeValue(stream, value);
       }
@@ -383,7 +383,9 @@ public class Pigeon {
   /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
   public interface EmvApi {
 
-    void enquireBalance(@NonNull String tID, @NonNull String accountType, Result<EmvBalanceEnquiryResponse> result);
+    void enquireBalance(@NonNull String tID, @NonNull String accountType, Result<TransactionDataResponse> result);
+
+    void purchase(@NonNull String amount, @NonNull String accountType, Result<TransactionDataResponse> result);
 
     void performKeyExchange(Result<Boolean> result);
 
@@ -412,9 +414,9 @@ public class Pigeon {
                   if (accountTypeArg == null) {
                     throw new NullPointerException("accountTypeArg unexpectedly null.");
                   }
-                  Result<EmvBalanceEnquiryResponse> resultCallback = 
-                      new Result<EmvBalanceEnquiryResponse>() {
-                        public void success(EmvBalanceEnquiryResponse result) {
+                  Result<TransactionDataResponse> resultCallback = 
+                      new Result<TransactionDataResponse>() {
+                        public void success(TransactionDataResponse result) {
                           wrapped.add(0, result);
                           reply.reply(wrapped);
                         }
@@ -426,6 +428,48 @@ public class Pigeon {
                       };
 
                   api.enquireBalance(tIDArg, accountTypeArg, resultCallback);
+                } catch (Error | RuntimeException exception) {
+                  ArrayList<Object> wrappedError = wrapError(exception);
+                  reply.reply(wrappedError);
+                }
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.EmvApi.purchase", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                try {
+                  ArrayList<Object> args = (ArrayList<Object>) message;
+                  assert args != null;
+                  String amountArg = (String) args.get(0);
+                  if (amountArg == null) {
+                    throw new NullPointerException("amountArg unexpectedly null.");
+                  }
+                  String accountTypeArg = (String) args.get(1);
+                  if (accountTypeArg == null) {
+                    throw new NullPointerException("accountTypeArg unexpectedly null.");
+                  }
+                  Result<TransactionDataResponse> resultCallback = 
+                      new Result<TransactionDataResponse>() {
+                        public void success(TransactionDataResponse result) {
+                          wrapped.add(0, result);
+                          reply.reply(wrapped);
+                        }
+
+                        public void error(Throwable error) {
+                          ArrayList<Object> wrappedError = wrapError(error);
+                          reply.reply(wrappedError);
+                        }
+                      };
+
+                  api.purchase(amountArg, accountTypeArg, resultCallback);
                 } catch (Error | RuntimeException exception) {
                   ArrayList<Object> wrappedError = wrapError(exception);
                   reply.reply(wrappedError);

@@ -8,8 +8,8 @@ import 'dart:typed_data' show Float64List, Int32List, Int64List, Uint8List;
 import 'package:flutter/foundation.dart' show ReadBuffer, WriteBuffer;
 import 'package:flutter/services.dart';
 
-class EmvBalanceEnquiryResponse {
-  EmvBalanceEnquiryResponse({
+class TransactionDataResponse {
+  TransactionDataResponse({
     this.amount,
     this.authorizationCode,
     this.cardExpiryDate,
@@ -73,9 +73,9 @@ class EmvBalanceEnquiryResponse {
     ];
   }
 
-  static EmvBalanceEnquiryResponse decode(Object result) {
+  static TransactionDataResponse decode(Object result) {
     result as List<Object?>;
-    return EmvBalanceEnquiryResponse(
+    return TransactionDataResponse(
       amount: result[0] as String?,
       authorizationCode: result[1] as String?,
       cardExpiryDate: result[2] as String?,
@@ -98,7 +98,7 @@ class _EmvApiCodec extends StandardMessageCodec {
   const _EmvApiCodec();
   @override
   void writeValue(WriteBuffer buffer, Object? value) {
-    if (value is EmvBalanceEnquiryResponse) {
+    if (value is TransactionDataResponse) {
       buffer.putUint8(128);
       writeValue(buffer, value.encode());
     } else {
@@ -110,7 +110,7 @@ class _EmvApiCodec extends StandardMessageCodec {
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
       case 128: 
-        return EmvBalanceEnquiryResponse.decode(readValue(buffer)!);
+        return TransactionDataResponse.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
     }
@@ -127,7 +127,7 @@ class EmvApi {
 
   static const MessageCodec<Object?> codec = _EmvApiCodec();
 
-  Future<EmvBalanceEnquiryResponse> enquireBalance(String arg_tID, String arg_accountType) async {
+  Future<TransactionDataResponse> enquireBalance(String arg_tID, String arg_accountType) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.EmvApi.enquireBalance', codec,
         binaryMessenger: _binaryMessenger);
@@ -150,7 +150,34 @@ class EmvApi {
         message: 'Host platform returned null value for non-null return value.',
       );
     } else {
-      return (replyList[0] as EmvBalanceEnquiryResponse?)!;
+      return (replyList[0] as TransactionDataResponse?)!;
+    }
+  }
+
+  Future<TransactionDataResponse> purchase(String arg_amount, String arg_accountType) async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.EmvApi.purchase', codec,
+        binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList =
+        await channel.send(<Object?>[arg_amount, arg_accountType]) as List<Object?>?;
+    if (replyList == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+      );
+    } else if (replyList.length > 1) {
+      throw PlatformException(
+        code: replyList[0]! as String,
+        message: replyList[1] as String?,
+        details: replyList[2],
+      );
+    } else if (replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
+    } else {
+      return (replyList[0] as TransactionDataResponse?)!;
     }
   }
 

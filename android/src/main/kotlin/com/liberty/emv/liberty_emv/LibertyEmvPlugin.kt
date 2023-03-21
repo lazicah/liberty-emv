@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.annotation.NonNull
 import com.libertyPay.horizonSDK.LibertyHorizonSDK
 import com.libertyPay.horizonSDK.Preferences
-import com.libertyPay.horizonSDK.common.AccountTypes
 import com.libertypay.posclient.PosRemoteClient
 import com.libertypay.posclient.api.Environment
 

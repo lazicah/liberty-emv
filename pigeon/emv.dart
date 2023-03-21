@@ -1,6 +1,6 @@
 import 'package:pigeon/pigeon.dart';
 
-class EmvBalanceEnquiryResponse {
+class TransactionDataResponse {
   final String? amount;
 
   final String? authorizationCode;
@@ -29,7 +29,7 @@ class EmvBalanceEnquiryResponse {
 
   final String? transactionType;
 
-  EmvBalanceEnquiryResponse(
+  TransactionDataResponse(
     this.amount,
     this.authorizationCode,
     this.cardExpiryDate,
@@ -50,7 +50,9 @@ class EmvBalanceEnquiryResponse {
 @HostApi()
 abstract class EmvApi {
   @async
-  EmvBalanceEnquiryResponse enquireBalance(String tID, String accountType);
+  TransactionDataResponse enquireBalance(String tID, String accountType);
+  @async
+  TransactionDataResponse purchase(String amount, String accountType);
   @async
   bool performKeyExchange();
 }

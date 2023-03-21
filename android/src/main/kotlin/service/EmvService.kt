@@ -1,18 +1,15 @@
 package service
 
-import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.liberty.emv.liberty_emv.Constants
 import com.libertyPay.horizonSDK.LibertyHorizonSDK
-import com.libertyPay.horizonSDK.common.AccountTypes
 import com.libertyPay.horizonSDK.common.ActivityRequestAndResultCodes
-import com.libertyPay.horizonSDK.common.PosTransactionException
-import com.libertyPay.horizonSDK.domain.AccountType
+import com.libertyPay.horizonSDK.domain.models.AccountType
+import com.libertyPay.horizonSDK.domain.models.TransactionAmount
 import com.libertypay.posclient.api.Environment
-import com.libertypay.posclient.api.models.response.BalanceEnquiryResponseData
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugins.Pigeon
@@ -20,16 +17,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import service.dto.PigeonResponseDto
-import timber.log.Timber
-import kotlin.Exception
 
 class EmvService(private val context: Context) : Pigeon.EmvApi,
     PluginRegistry.ActivityResultListener {
 
 
     var activityBinding: ActivityPluginBinding? = null
-    private var resultCallback: Pigeon.Result<Pigeon.EmvBalanceEnquiryResponse>? = null
+    private var resultCallback: Pigeon.Result<Pigeon.TransactionDataResponse>? = null
 
     fun initialize(binding: ActivityPluginBinding) {
         activityBinding = binding
@@ -39,7 +33,7 @@ class EmvService(private val context: Context) : Pigeon.EmvApi,
     override fun enquireBalance(
         tID: String,
         accountType: String,
-        result: Pigeon.Result<Pigeon.EmvBalanceEnquiryResponse>?
+        result: Pigeon.Result<Pigeon.TransactionDataResponse>?
     ) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
@@ -48,13 +42,38 @@ class EmvService(private val context: Context) : Pigeon.EmvApi,
             delay(1000)
             resultCallback = result
             val accountTypeEnum =
-                Constants.transactionTypeMap[accountType] ?: AccountTypes.DEFAULT_UNSPECIFIED
+                Constants.transactionTypeMap[accountType] ?: AccountType.DEFAULT_UNSPECIFIED
 
             activityBinding?.activity?.let {
                 LibertyHorizonSDK.startBalanceEnquiryDialogActivity(
                     activity = it,
                     accountType = accountTypeEnum,
                     terminalId = tID,
+                )
+            }
+        }
+
+    }
+
+    override fun purchase(
+        amount: String,
+        accountType: String,
+        result: Pigeon.Result<Pigeon.TransactionDataResponse>?
+    ) {
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            LibertyHorizonSDK.initialize(activityBinding!!.activity, environment = Environment.Live)
+
+            delay(1000)
+            resultCallback = result
+            val accountTypeEnum =
+                Constants.transactionTypeMap[accountType] ?: AccountType.DEFAULT_UNSPECIFIED
+
+            activityBinding?.activity?.let {
+                LibertyHorizonSDK.startPurchaseActivity(
+                    activity = it,
+                    transactionAmount = TransactionAmount(amount),
+                    accountType = accountTypeEnum
                 )
             }
         }
@@ -72,8 +91,9 @@ class EmvService(private val context: Context) : Pigeon.EmvApi,
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
+        Log.d(TAG, "onActivityResult: $resultCode")
         val handler = ActivityResultHandler(resultCallback)
-        data?.let { return handler(it, resultCode) }
+        data?.let { return handler(it, resultCode, requestCode) }
         return false
     }
 
