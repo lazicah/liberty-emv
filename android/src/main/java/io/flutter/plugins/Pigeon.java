@@ -33,6 +33,70 @@ public class Pigeon {
   }
 
   /** Generated class from Pigeon that represents data sent in messages. */
+  public static final class KeyExchangeResponse {
+    private @Nullable String deviceState;
+
+    public @Nullable String getDeviceState() {
+      return deviceState;
+    }
+
+    public void setDeviceState(@Nullable String setterArg) {
+      this.deviceState = setterArg;
+    }
+
+    private @Nullable Boolean isSuccessful;
+
+    public @Nullable Boolean getIsSuccessful() {
+      return isSuccessful;
+    }
+
+    public void setIsSuccessful(@Nullable Boolean setterArg) {
+      this.isSuccessful = setterArg;
+    }
+
+    public static final class Builder {
+
+      private @Nullable String deviceState;
+
+      public @NonNull Builder setDeviceState(@Nullable String setterArg) {
+        this.deviceState = setterArg;
+        return this;
+      }
+
+      private @Nullable Boolean isSuccessful;
+
+      public @NonNull Builder setIsSuccessful(@Nullable Boolean setterArg) {
+        this.isSuccessful = setterArg;
+        return this;
+      }
+
+      public @NonNull KeyExchangeResponse build() {
+        KeyExchangeResponse pigeonReturn = new KeyExchangeResponse();
+        pigeonReturn.setDeviceState(deviceState);
+        pigeonReturn.setIsSuccessful(isSuccessful);
+        return pigeonReturn;
+      }
+    }
+
+    @NonNull
+    ArrayList<Object> toList() {
+      ArrayList<Object> toListResult = new ArrayList<Object>(2);
+      toListResult.add(deviceState);
+      toListResult.add(isSuccessful);
+      return toListResult;
+    }
+
+    static @NonNull KeyExchangeResponse fromList(@NonNull ArrayList<Object> list) {
+      KeyExchangeResponse pigeonResult = new KeyExchangeResponse();
+      Object deviceState = list.get(0);
+      pigeonResult.setDeviceState((String) deviceState);
+      Object isSuccessful = list.get(1);
+      pigeonResult.setIsSuccessful((Boolean) isSuccessful);
+      return pigeonResult;
+    }
+  }
+
+  /** Generated class from Pigeon that represents data sent in messages. */
   public static final class TransactionDataResponse {
     private @Nullable String amount;
 
@@ -384,6 +448,8 @@ public class Pigeon {
     protected Object readValueOfType(byte type, @NonNull ByteBuffer buffer) {
       switch (type) {
         case (byte) 128:
+          return KeyExchangeResponse.fromList((ArrayList<Object>) readValue(buffer));
+        case (byte) 129:
           return TransactionDataResponse.fromList((ArrayList<Object>) readValue(buffer));
         default:
           return super.readValueOfType(type, buffer);
@@ -392,8 +458,11 @@ public class Pigeon {
 
     @Override
     protected void writeValue(@NonNull ByteArrayOutputStream stream, Object value) {
-      if (value instanceof TransactionDataResponse) {
+      if (value instanceof KeyExchangeResponse) {
         stream.write(128);
+        writeValue(stream, ((KeyExchangeResponse) value).toList());
+      } else if (value instanceof TransactionDataResponse) {
+        stream.write(129);
         writeValue(stream, ((TransactionDataResponse) value).toList());
       } else {
         super.writeValue(stream, value);
@@ -408,7 +477,7 @@ public class Pigeon {
 
     void purchase(@NonNull String amount, @NonNull String accountType, Result<TransactionDataResponse> result);
 
-    void performKeyExchange(Result<Boolean> result);
+    void performKeyExchange(Result<KeyExchangeResponse> result);
 
     /** The codec used by EmvApi. */
     static MessageCodec<Object> getCodec() {
@@ -509,9 +578,9 @@ public class Pigeon {
               (message, reply) -> {
                 ArrayList<Object> wrapped = new ArrayList<Object>();
                 try {
-                  Result<Boolean> resultCallback = 
-                      new Result<Boolean>() {
-                        public void success(Boolean result) {
+                  Result<KeyExchangeResponse> resultCallback = 
+                      new Result<KeyExchangeResponse>() {
+                        public void success(KeyExchangeResponse result) {
                           wrapped.add(0, result);
                           reply.reply(wrapped);
                         }

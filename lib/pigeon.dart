@@ -8,6 +8,32 @@ import 'dart:typed_data' show Float64List, Int32List, Int64List, Uint8List;
 import 'package:flutter/foundation.dart' show ReadBuffer, WriteBuffer;
 import 'package:flutter/services.dart';
 
+class KeyExchangeResponse {
+  KeyExchangeResponse({
+    this.deviceState,
+    this.isSuccessful,
+  });
+
+  String? deviceState;
+
+  bool? isSuccessful;
+
+  Object encode() {
+    return <Object?>[
+      deviceState,
+      isSuccessful,
+    ];
+  }
+
+  static KeyExchangeResponse decode(Object result) {
+    result as List<Object?>;
+    return KeyExchangeResponse(
+      deviceState: result[0] as String?,
+      isSuccessful: result[1] as bool?,
+    );
+  }
+}
+
 class TransactionDataResponse {
   TransactionDataResponse({
     this.amount,
@@ -103,8 +129,11 @@ class _EmvApiCodec extends StandardMessageCodec {
   const _EmvApiCodec();
   @override
   void writeValue(WriteBuffer buffer, Object? value) {
-    if (value is TransactionDataResponse) {
+    if (value is KeyExchangeResponse) {
       buffer.putUint8(128);
+      writeValue(buffer, value.encode());
+    } else if (value is TransactionDataResponse) {
+      buffer.putUint8(129);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -115,6 +144,8 @@ class _EmvApiCodec extends StandardMessageCodec {
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
       case 128: 
+        return KeyExchangeResponse.decode(readValue(buffer)!);
+      case 129: 
         return TransactionDataResponse.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -186,7 +217,7 @@ class EmvApi {
     }
   }
 
-  Future<bool> performKeyExchange() async {
+  Future<KeyExchangeResponse> performKeyExchange() async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.EmvApi.performKeyExchange', codec,
         binaryMessenger: _binaryMessenger);
@@ -209,7 +240,7 @@ class EmvApi {
         message: 'Host platform returned null value for non-null return value.',
       );
     } else {
-      return (replyList[0] as bool?)!;
+      return (replyList[0] as KeyExchangeResponse?)!;
     }
   }
 }

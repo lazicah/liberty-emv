@@ -1,5 +1,12 @@
 import 'package:pigeon/pigeon.dart';
 
+class KeyExchangeResponse {
+  final String? deviceState;
+  final bool? isSuccessful;
+
+  KeyExchangeResponse(this.deviceState, this.isSuccessful);
+}
+
 class TransactionDataResponse {
   final String? amount;
 
@@ -57,5 +64,5 @@ abstract class EmvApi {
   @async
   TransactionDataResponse purchase(String amount, String accountType);
   @async
-  bool performKeyExchange();
+  KeyExchangeResponse performKeyExchange();
 }

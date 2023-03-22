@@ -5,3 +5,8 @@ extension Stringify on TransactionDataResponse {
     return 'TransactionDataResponse(amount: $amount, deviceState: $deviceState, authorizationCode: $authorizationCode, cardExpiryDate: $cardExpiryDate, cardHolderName: $cardHolderName, date: $date, maskedPan: $maskedPan, merchantId: $merchantId, merchantName: $merchantName, responseCode: $responseCode, responseMessage: $responseMessage, rrn: $rrn, stan: $stan, terminalId: $terminalId, transactionType: $transactionType)';
   }
 }
+
+extension StringifyKE on KeyExchangeResponse {
+  String stringify() =>
+      'KeyExchangeResponse(deviceState: $deviceState, isSuccessful: $isSuccessful)';
+}

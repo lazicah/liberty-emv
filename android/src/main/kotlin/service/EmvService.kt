@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.liberty.emv.liberty_emv.Constants
+import com.liberty.emv.liberty_emv.DeviceState
 import com.libertyPay.horizonSDK.LibertyHorizonSDK
 import com.libertyPay.horizonSDK.common.ActivityRequestAndResultCodes
 import com.libertyPay.horizonSDK.domain.models.AccountType
@@ -81,11 +82,16 @@ class EmvService(private val context: Context) : Pigeon.EmvApi,
     }
 
 
-    override fun performKeyExchange(result: Pigeon.Result<Boolean>?) {
+    override fun performKeyExchange(result: Pigeon.Result<Pigeon.KeyExchangeResponse>?) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
             val response = LibertyHorizonSDK.doKeyExchange()
-            result?.success(response)
+            val state = if (response) DeviceState.SUCCESSFUL.value else DeviceState.ERROR.value
+            val keyExchangeResponse = Pigeon.KeyExchangeResponse().apply {
+                deviceState = state
+                isSuccessful = response
+            }
+            result?.success(keyExchangeResponse)
         }
     }
 

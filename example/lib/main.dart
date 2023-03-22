@@ -47,7 +47,10 @@ class _MyAppState extends State<MyApp> {
             children: [
               Text('Running on: $_platformVersion\n'),
               ElevatedButton(
-                onPressed: () => _emvApi.performKeyExchange(),
+                onPressed: () async {
+                  final response = await _emvApi.performKeyExchange();
+                  print(response.stringify());
+                },
                 child: Text("Key Exchange"),
               ),
             ],
