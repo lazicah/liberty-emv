@@ -3,8 +3,9 @@ import 'package:pigeon/pigeon.dart';
 class KeyExchangeResponse {
   final String? deviceState;
   final bool? isSuccessful;
+  final Map<String?, String?>? responseData;
 
-  KeyExchangeResponse(this.deviceState, this.isSuccessful);
+  KeyExchangeResponse(this.deviceState, this.isSuccessful, this.responseData);
 }
 
 class TransactionDataResponse {
@@ -60,9 +61,17 @@ class TransactionDataResponse {
 @HostApi()
 abstract class EmvApi {
   @async
-  TransactionDataResponse enquireBalance(String tID, String accountType);
+  TransactionDataResponse enquireBalance(
+    String tID,
+    String accountType,
+    String rrn,
+  );
   @async
-  TransactionDataResponse purchase(String amount, String accountType);
+  TransactionDataResponse purchase(
+    String amount,
+    String accountType,
+    String rrn,
+  );
   @async
   KeyExchangeResponse performKeyExchange();
 }

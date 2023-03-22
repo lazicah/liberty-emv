@@ -9,6 +9,7 @@ import com.liberty.emv.liberty_emv.DeviceState
 import com.libertyPay.horizonSDK.LibertyHorizonSDK
 import com.libertyPay.horizonSDK.common.ActivityRequestAndResultCodes
 import com.libertyPay.horizonSDK.domain.models.AccountType
+import com.libertyPay.horizonSDK.domain.models.RetrievalReferenceNumber
 import com.libertyPay.horizonSDK.domain.models.TransactionAmount
 import com.libertypay.posclient.api.Environment
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -34,6 +35,7 @@ class EmvService(private val context: Context) : Pigeon.EmvApi,
     override fun enquireBalance(
         tID: String,
         accountType: String,
+        rrn: String,
         result: Pigeon.Result<Pigeon.TransactionDataResponse>?
     ) {
         val scope = CoroutineScope(Dispatchers.IO)
@@ -50,6 +52,7 @@ class EmvService(private val context: Context) : Pigeon.EmvApi,
                     activity = it,
                     accountType = accountTypeEnum,
                     terminalId = tID,
+                    retrievalReferenceNumber = RetrievalReferenceNumber(rrn)
                 )
             }
         }
@@ -59,6 +62,7 @@ class EmvService(private val context: Context) : Pigeon.EmvApi,
     override fun purchase(
         amount: String,
         accountType: String,
+        rrn: String,
         result: Pigeon.Result<Pigeon.TransactionDataResponse>?
     ) {
         val scope = CoroutineScope(Dispatchers.IO)
@@ -74,7 +78,8 @@ class EmvService(private val context: Context) : Pigeon.EmvApi,
                 LibertyHorizonSDK.startPurchaseActivity(
                     activity = it,
                     transactionAmount = TransactionAmount(amount),
-                    accountType = accountTypeEnum
+                    accountType = accountTypeEnum,
+                    retrievalReferenceNumber = RetrievalReferenceNumber(rrn)
                 )
             }
         }
@@ -90,6 +95,9 @@ class EmvService(private val context: Context) : Pigeon.EmvApi,
             val keyExchangeResponse = Pigeon.KeyExchangeResponse().apply {
                 deviceState = state
                 isSuccessful = response
+                responseData = mapOf(
+                    "message" to "Key exchange service currently unavailable"
+                )
             }
             result?.success(keyExchangeResponse)
         }

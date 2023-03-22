@@ -12,16 +12,20 @@ class KeyExchangeResponse {
   KeyExchangeResponse({
     this.deviceState,
     this.isSuccessful,
+    this.responseData,
   });
 
   String? deviceState;
 
   bool? isSuccessful;
 
+  Map<String?, String?>? responseData;
+
   Object encode() {
     return <Object?>[
       deviceState,
       isSuccessful,
+      responseData,
     ];
   }
 
@@ -30,6 +34,7 @@ class KeyExchangeResponse {
     return KeyExchangeResponse(
       deviceState: result[0] as String?,
       isSuccessful: result[1] as bool?,
+      responseData: (result[2] as Map<Object?, Object?>?)?.cast<String?, String?>(),
     );
   }
 }
@@ -163,12 +168,12 @@ class EmvApi {
 
   static const MessageCodec<Object?> codec = _EmvApiCodec();
 
-  Future<TransactionDataResponse> enquireBalance(String arg_tID, String arg_accountType) async {
+  Future<TransactionDataResponse> enquireBalance(String arg_tID, String arg_accountType, String arg_rrn) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.EmvApi.enquireBalance', codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_tID, arg_accountType]) as List<Object?>?;
+        await channel.send(<Object?>[arg_tID, arg_accountType, arg_rrn]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',
@@ -190,12 +195,12 @@ class EmvApi {
     }
   }
 
-  Future<TransactionDataResponse> purchase(String arg_amount, String arg_accountType) async {
+  Future<TransactionDataResponse> purchase(String arg_amount, String arg_accountType, String arg_rrn) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.EmvApi.purchase', codec,
         binaryMessenger: _binaryMessenger);
     final List<Object?>? replyList =
-        await channel.send(<Object?>[arg_amount, arg_accountType]) as List<Object?>?;
+        await channel.send(<Object?>[arg_amount, arg_accountType, arg_rrn]) as List<Object?>?;
     if (replyList == null) {
       throw PlatformException(
         code: 'channel-error',

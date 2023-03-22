@@ -54,6 +54,16 @@ public class Pigeon {
       this.isSuccessful = setterArg;
     }
 
+    private @Nullable Map<String, String> responseData;
+
+    public @Nullable Map<String, String> getResponseData() {
+      return responseData;
+    }
+
+    public void setResponseData(@Nullable Map<String, String> setterArg) {
+      this.responseData = setterArg;
+    }
+
     public static final class Builder {
 
       private @Nullable String deviceState;
@@ -70,19 +80,28 @@ public class Pigeon {
         return this;
       }
 
+      private @Nullable Map<String, String> responseData;
+
+      public @NonNull Builder setResponseData(@Nullable Map<String, String> setterArg) {
+        this.responseData = setterArg;
+        return this;
+      }
+
       public @NonNull KeyExchangeResponse build() {
         KeyExchangeResponse pigeonReturn = new KeyExchangeResponse();
         pigeonReturn.setDeviceState(deviceState);
         pigeonReturn.setIsSuccessful(isSuccessful);
+        pigeonReturn.setResponseData(responseData);
         return pigeonReturn;
       }
     }
 
     @NonNull
     ArrayList<Object> toList() {
-      ArrayList<Object> toListResult = new ArrayList<Object>(2);
+      ArrayList<Object> toListResult = new ArrayList<Object>(3);
       toListResult.add(deviceState);
       toListResult.add(isSuccessful);
+      toListResult.add(responseData);
       return toListResult;
     }
 
@@ -92,6 +111,8 @@ public class Pigeon {
       pigeonResult.setDeviceState((String) deviceState);
       Object isSuccessful = list.get(1);
       pigeonResult.setIsSuccessful((Boolean) isSuccessful);
+      Object responseData = list.get(2);
+      pigeonResult.setResponseData((Map<String, String>) responseData);
       return pigeonResult;
     }
   }
@@ -473,9 +494,9 @@ public class Pigeon {
   /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
   public interface EmvApi {
 
-    void enquireBalance(@NonNull String tID, @NonNull String accountType, Result<TransactionDataResponse> result);
+    void enquireBalance(@NonNull String tID, @NonNull String accountType, @NonNull String rrn, Result<TransactionDataResponse> result);
 
-    void purchase(@NonNull String amount, @NonNull String accountType, Result<TransactionDataResponse> result);
+    void purchase(@NonNull String amount, @NonNull String accountType, @NonNull String rrn, Result<TransactionDataResponse> result);
 
     void performKeyExchange(Result<KeyExchangeResponse> result);
 
@@ -504,6 +525,10 @@ public class Pigeon {
                   if (accountTypeArg == null) {
                     throw new NullPointerException("accountTypeArg unexpectedly null.");
                   }
+                  String rrnArg = (String) args.get(2);
+                  if (rrnArg == null) {
+                    throw new NullPointerException("rrnArg unexpectedly null.");
+                  }
                   Result<TransactionDataResponse> resultCallback = 
                       new Result<TransactionDataResponse>() {
                         public void success(TransactionDataResponse result) {
@@ -517,7 +542,7 @@ public class Pigeon {
                         }
                       };
 
-                  api.enquireBalance(tIDArg, accountTypeArg, resultCallback);
+                  api.enquireBalance(tIDArg, accountTypeArg, rrnArg, resultCallback);
                 } catch (Error | RuntimeException exception) {
                   ArrayList<Object> wrappedError = wrapError(exception);
                   reply.reply(wrappedError);
@@ -546,6 +571,10 @@ public class Pigeon {
                   if (accountTypeArg == null) {
                     throw new NullPointerException("accountTypeArg unexpectedly null.");
                   }
+                  String rrnArg = (String) args.get(2);
+                  if (rrnArg == null) {
+                    throw new NullPointerException("rrnArg unexpectedly null.");
+                  }
                   Result<TransactionDataResponse> resultCallback = 
                       new Result<TransactionDataResponse>() {
                         public void success(TransactionDataResponse result) {
@@ -559,7 +588,7 @@ public class Pigeon {
                         }
                       };
 
-                  api.purchase(amountArg, accountTypeArg, resultCallback);
+                  api.purchase(amountArg, accountTypeArg, rrnArg, resultCallback);
                 } catch (Error | RuntimeException exception) {
                   ArrayList<Object> wrappedError = wrapError(exception);
                   reply.reply(wrappedError);

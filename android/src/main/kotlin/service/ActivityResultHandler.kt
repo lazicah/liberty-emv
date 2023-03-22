@@ -27,7 +27,7 @@ class ActivityResultHandler(
 
     private fun handleSuccessResponse(data: Intent?, resultCode: Int, requestCode: Int): Boolean {
         when (requestCode) {
-            ActivityRequestAndResultCodes.PURCHASE_RESULT_CODE -> {
+            ActivityRequestAndResultCodes.PURCHASE_REQUEST_CODE -> {
                 val balanceEnquiryData =
                     data?.getParcelableExtra<TransactionData?>(TransactionIntentExtras.TRANSACTION_RESULT)
 
