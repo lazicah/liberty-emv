@@ -44,6 +44,16 @@ public class Pigeon {
       this.amount = setterArg;
     }
 
+    private @Nullable String deviceState;
+
+    public @Nullable String getDeviceState() {
+      return deviceState;
+    }
+
+    public void setDeviceState(@Nullable String setterArg) {
+      this.deviceState = setterArg;
+    }
+
     private @Nullable String authorizationCode;
 
     public @Nullable String getAuthorizationCode() {
@@ -183,6 +193,13 @@ public class Pigeon {
         return this;
       }
 
+      private @Nullable String deviceState;
+
+      public @NonNull Builder setDeviceState(@Nullable String setterArg) {
+        this.deviceState = setterArg;
+        return this;
+      }
+
       private @Nullable String authorizationCode;
 
       public @NonNull Builder setAuthorizationCode(@Nullable String setterArg) {
@@ -277,6 +294,7 @@ public class Pigeon {
       public @NonNull TransactionDataResponse build() {
         TransactionDataResponse pigeonReturn = new TransactionDataResponse();
         pigeonReturn.setAmount(amount);
+        pigeonReturn.setDeviceState(deviceState);
         pigeonReturn.setAuthorizationCode(authorizationCode);
         pigeonReturn.setCardExpiryDate(cardExpiryDate);
         pigeonReturn.setCardHolderName(cardHolderName);
@@ -296,8 +314,9 @@ public class Pigeon {
 
     @NonNull
     ArrayList<Object> toList() {
-      ArrayList<Object> toListResult = new ArrayList<Object>(14);
+      ArrayList<Object> toListResult = new ArrayList<Object>(15);
       toListResult.add(amount);
+      toListResult.add(deviceState);
       toListResult.add(authorizationCode);
       toListResult.add(cardExpiryDate);
       toListResult.add(cardHolderName);
@@ -318,31 +337,33 @@ public class Pigeon {
       TransactionDataResponse pigeonResult = new TransactionDataResponse();
       Object amount = list.get(0);
       pigeonResult.setAmount((String) amount);
-      Object authorizationCode = list.get(1);
+      Object deviceState = list.get(1);
+      pigeonResult.setDeviceState((String) deviceState);
+      Object authorizationCode = list.get(2);
       pigeonResult.setAuthorizationCode((String) authorizationCode);
-      Object cardExpiryDate = list.get(2);
+      Object cardExpiryDate = list.get(3);
       pigeonResult.setCardExpiryDate((String) cardExpiryDate);
-      Object cardHolderName = list.get(3);
+      Object cardHolderName = list.get(4);
       pigeonResult.setCardHolderName((String) cardHolderName);
-      Object date = list.get(4);
+      Object date = list.get(5);
       pigeonResult.setDate((String) date);
-      Object maskedPan = list.get(5);
+      Object maskedPan = list.get(6);
       pigeonResult.setMaskedPan((String) maskedPan);
-      Object merchantId = list.get(6);
+      Object merchantId = list.get(7);
       pigeonResult.setMerchantId((String) merchantId);
-      Object merchantName = list.get(7);
+      Object merchantName = list.get(8);
       pigeonResult.setMerchantName((String) merchantName);
-      Object responseCode = list.get(8);
+      Object responseCode = list.get(9);
       pigeonResult.setResponseCode((String) responseCode);
-      Object responseMessage = list.get(9);
+      Object responseMessage = list.get(10);
       pigeonResult.setResponseMessage((String) responseMessage);
-      Object rrn = list.get(10);
+      Object rrn = list.get(11);
       pigeonResult.setRrn((String) rrn);
-      Object stan = list.get(11);
+      Object stan = list.get(12);
       pigeonResult.setStan((String) stan);
-      Object terminalId = list.get(12);
+      Object terminalId = list.get(13);
       pigeonResult.setTerminalId((String) terminalId);
-      Object transactionType = list.get(13);
+      Object transactionType = list.get(14);
       pigeonResult.setTransactionType((String) transactionType);
       return pigeonResult;
     }

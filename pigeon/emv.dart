@@ -3,6 +3,8 @@ import 'package:pigeon/pigeon.dart';
 class TransactionDataResponse {
   final String? amount;
 
+  final String? deviceState;
+
   final String? authorizationCode;
 
   final String? cardExpiryDate;
@@ -44,6 +46,7 @@ class TransactionDataResponse {
     this.stan,
     this.terminalId,
     this.transactionType,
+    this.deviceState,
   );
 }
 

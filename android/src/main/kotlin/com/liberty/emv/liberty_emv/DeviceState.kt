@@ -1,0 +1,13 @@
+package com.liberty.emv.liberty_emv
+
+enum class DeviceState(val value:String) {
+    DONE_PROCESSING("DONE_PROCESSING"),
+    ERROR("ERROR"),
+    PRINTING_DONE("PRINTING_DONE"),
+    PROCESSING("PROCESSING"),
+    SUCCESSFUL("SUCCESSFUL"),
+    PRINTING_FAILED("PRINTING_FAILED"),
+    TRANS_CANCELLED("TRANS_CANCELLED"),
+    TRANS_FAILED("TRANS_FAILED"),
+    TRANS_DONE("TRANS_DONE");
+}

@@ -3,6 +3,7 @@ package service
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.util.Log
+import com.liberty.emv.liberty_emv.DeviceState
 import com.libertyPay.horizonSDK.common.ActivityRequestAndResultCodes
 import com.libertyPay.horizonSDK.common.TransactionIntentExtras
 import com.libertyPay.horizonSDK.domain.models.PosTransactionException
@@ -20,13 +21,11 @@ class ActivityResultHandler(
             ActivityRequestAndResultCodes.TRANSACTION_SUCCESS_RESULT_CODE to ::handleSuccessResponse,
             ActivityRequestAndResultCodes.TRANSACTION_FAILURE_RESULT_CODE to ::handleTransactionFailure,
             ActivityRequestAndResultCodes.KEY_EXCHANGE_FAILED_RESULT_CODE to ::handleKeyExchangeFailure,
+            0 to ::handleCancelledTransaction,
         )
 
 
     private fun handleSuccessResponse(data: Intent?, resultCode: Int, requestCode: Int): Boolean {
-
-
-
         when (requestCode) {
             ActivityRequestAndResultCodes.PURCHASE_RESULT_CODE -> {
                 val balanceEnquiryData =
@@ -34,6 +33,7 @@ class ActivityResultHandler(
 
                 balanceEnquiryData?.let {
                     val emvResponse = PigeonResponseDto.toPurchaseResponse(it)
+                    emvResponse.deviceState = DeviceState.TRANS_DONE.value
                     resultCallback?.success(emvResponse)
                 }
             }
@@ -43,6 +43,7 @@ class ActivityResultHandler(
 
                 balanceEnquiryData?.let {
                     val emvResponse = PigeonResponseDto.toBalanceEnquiryResponse(it)
+                    emvResponse.deviceState = DeviceState.TRANS_DONE.value
                     resultCallback?.success(emvResponse)
                 }
 
@@ -77,6 +78,18 @@ class ActivityResultHandler(
         keyExchangeException?.let {
             resultCallback?.error(Exception(it.errorMessage))
         }
+        return true
+    }
+
+    private fun handleCancelledTransaction(
+        data: Intent?,
+        resultCode: Int,
+        requestCode: Int
+    ): Boolean {
+        val response = Pigeon.TransactionDataResponse().apply {
+            deviceState = DeviceState.TRANS_CANCELLED.value
+        }
+        resultCallback?.success(response)
         return true
     }
 

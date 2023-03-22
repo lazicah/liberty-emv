@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 class TransactionDataResponse {
   TransactionDataResponse({
     this.amount,
+    this.deviceState,
     this.authorizationCode,
     this.cardExpiryDate,
     this.cardHolderName,
@@ -27,6 +28,8 @@ class TransactionDataResponse {
   });
 
   String? amount;
+
+  String? deviceState;
 
   String? authorizationCode;
 
@@ -57,6 +60,7 @@ class TransactionDataResponse {
   Object encode() {
     return <Object?>[
       amount,
+      deviceState,
       authorizationCode,
       cardExpiryDate,
       cardHolderName,
@@ -77,19 +81,20 @@ class TransactionDataResponse {
     result as List<Object?>;
     return TransactionDataResponse(
       amount: result[0] as String?,
-      authorizationCode: result[1] as String?,
-      cardExpiryDate: result[2] as String?,
-      cardHolderName: result[3] as String?,
-      date: result[4] as String?,
-      maskedPan: result[5] as String?,
-      merchantId: result[6] as String?,
-      merchantName: result[7] as String?,
-      responseCode: result[8] as String?,
-      responseMessage: result[9] as String?,
-      rrn: result[10] as String?,
-      stan: result[11] as String?,
-      terminalId: result[12] as String?,
-      transactionType: result[13] as String?,
+      deviceState: result[1] as String?,
+      authorizationCode: result[2] as String?,
+      cardExpiryDate: result[3] as String?,
+      cardHolderName: result[4] as String?,
+      date: result[5] as String?,
+      maskedPan: result[6] as String?,
+      merchantId: result[7] as String?,
+      merchantName: result[8] as String?,
+      responseCode: result[9] as String?,
+      responseMessage: result[10] as String?,
+      rrn: result[11] as String?,
+      stan: result[12] as String?,
+      terminalId: result[13] as String?,
+      transactionType: result[14] as String?,
     );
   }
 }

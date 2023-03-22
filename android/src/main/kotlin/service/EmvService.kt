@@ -92,9 +92,9 @@ class EmvService(private val context: Context) : Pigeon.EmvApi,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
         Log.d(TAG, "onActivityResult: $resultCode")
+        Log.d(TAG, "onActivityResult:changed")
         val handler = ActivityResultHandler(resultCallback)
-        data?.let { return handler(it, resultCode, requestCode) }
-        return false
+        return handler(data, resultCode, requestCode)
     }
 
 
