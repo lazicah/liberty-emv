@@ -1,13 +1,10 @@
 package service
 
-import android.content.ContentValues.TAG
 import android.content.Intent
-import android.util.Log
 import com.liberty.emv.liberty_emv.DeviceState
 import com.libertyPay.horizonSDK.common.ActivityRequestAndResultCodes
 import com.libertyPay.horizonSDK.common.TransactionIntentExtras
 import com.libertyPay.horizonSDK.domain.models.PosTransactionException
-import com.libertypay.posclient.api.models.response.BalanceEnquiryResponseData
 import com.libertypay.posclient.api.models.response.TransactionData
 import io.flutter.plugins.Pigeon
 import service.dto.PigeonResponseDto
@@ -32,17 +29,17 @@ class ActivityResultHandler(
                     data?.getParcelableExtra<TransactionData?>(TransactionIntentExtras.TRANSACTION_RESULT)
 
                 balanceEnquiryData?.let {
-                    val emvResponse = PigeonResponseDto.toPurchaseResponse(it)
+                    val emvResponse = PigeonResponseDto.toTransactionData(it)
                     emvResponse.deviceState = DeviceState.TRANS_DONE.value
                     resultCallback?.success(emvResponse)
                 }
             }
             else -> {
                 val balanceEnquiryData =
-                    data?.getParcelableExtra<BalanceEnquiryResponseData?>(TransactionIntentExtras.TRANSACTION_RESULT)
+                    data?.getParcelableExtra<TransactionData?>(TransactionIntentExtras.TRANSACTION_RESULT)
 
                 balanceEnquiryData?.let {
-                    val emvResponse = PigeonResponseDto.toBalanceEnquiryResponse(it)
+                    val emvResponse = PigeonResponseDto.toTransactionData(it)
                     emvResponse.deviceState = DeviceState.TRANS_DONE.value
                     resultCallback?.success(emvResponse)
                 }

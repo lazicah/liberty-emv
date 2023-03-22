@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:liberty_emv/liberty_emv.dart';
 
 void main() {
@@ -25,11 +26,21 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    // final res = await _emvApi.enquireBalance("fdf", "SAVINGS");
-    final res = await _emvApi.purchase("5", "SAVINGS", "123456789112");
+    final res =
+        await _emvApi.enquireBalance("8fdsfs", "SAVINGS", "123456789112");
+    // final res = await _emvApi.purchase("5", "SAVINGS", "123456789112");
     // final res = await _emvApi.performKeyExchange();
     print(res);
     print(res.stringify());
+  }
+
+  Future<void> keyExchange() async {
+    try {
+      final response = await _emvApi.performKeyExchange();
+      print(response.stringify());
+    } on PlatformException catch (e) {
+      print(e.code.substring(21));
+    }
   }
 
   @override
@@ -47,10 +58,7 @@ class _MyAppState extends State<MyApp> {
             children: [
               Text('Running on: $_platformVersion\n'),
               ElevatedButton(
-                onPressed: () async {
-                  final response = await _emvApi.performKeyExchange();
-                  print(response.stringify());
-                },
+                onPressed: keyExchange,
                 child: Text("Key Exchange"),
               ),
             ],

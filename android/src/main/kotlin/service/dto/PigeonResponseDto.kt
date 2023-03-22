@@ -29,7 +29,7 @@ class PigeonResponseDto {
             }
         }
 
-        fun toPurchaseResponse(transactionResponse: TransactionData): Pigeon.TransactionDataResponse {
+        fun toTransactionData(transactionResponse: TransactionData): Pigeon.TransactionDataResponse {
             return  Pigeon.TransactionDataResponse().apply {
                 amount = transactionResponse.amount
                 authorizationCode = transactionResponse.authorizationCode
