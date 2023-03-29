@@ -42,10 +42,7 @@ class LibertyEmvPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
         emvService.initialize(binding)
-
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
-        PosRemoteClient.initPosApi()
-        Preferences.init(binding.activity)
     }
 
     override fun onDetachedFromActivityForConfigChanges() {

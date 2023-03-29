@@ -49,6 +49,7 @@ android {
 dependencies {
     compileOnly project(path:':horizon_isw')
     compileOnly project(path:':pos_emv')
+
     implementation 'androidx.databinding:viewbinding:7.4.0'
     implementation 'androidx.appcompat:appcompat:1.3.0'
     implementation 'com.google.android.material:material:1.3.0'
