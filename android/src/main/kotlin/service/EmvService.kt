@@ -3,113 +3,148 @@ package service
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.util.Log
 import com.liberty.emv.liberty_emv.Constants
 import com.liberty.emv.liberty_emv.DeviceState
 import com.libertyPay.horizonSDK.LibertyHorizonSDK
-import com.libertyPay.horizonSDK.common.ActivityRequestAndResultCodes
 import com.libertyPay.horizonSDK.domain.models.AccountType
 import com.libertyPay.horizonSDK.domain.models.RetrievalReferenceNumber
 import com.libertyPay.horizonSDK.domain.models.TransactionAmount
 import com.libertypay.posclient.api.Environment
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.PluginRegistry
-import io.flutter.plugins.Pigeon
+import io.flutter.plugins.LibertyEmv
+import io.flutter.plugins.LibertyEmv.FlutterError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
-class EmvService(private val context: Context) : Pigeon.EmvApi,
+class EmvService(private val context: Context) : LibertyEmv.LibertyEmvApi,
     PluginRegistry.ActivityResultListener {
 
-
     var activityBinding: ActivityPluginBinding? = null
-    private var resultCallback: Pigeon.Result<Pigeon.TransactionDataResponse>? = null
+    private var resultCallback: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>? = null
+    var isSdkInitialised: Boolean = false
 
     fun initialize(binding: ActivityPluginBinding) {
         activityBinding = binding
         binding.addActivityResultListener(this)
     }
 
-    override fun enquireBalance(
-        tID: String,
-        accountType: String,
-        rrn: String,
-        result: Pigeon.Result<Pigeon.TransactionDataResponse>?
-    ) {
+    override fun enquireBalance(isOfflineTransaction: Boolean, accountType: LibertyEmv.AccountType, rrn: String, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>?) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
-            LibertyHorizonSDK.initialize(activityBinding!!.activity, environment = Environment.Live)
-
-            delay(1000)
             resultCallback = result
             val accountTypeEnum =
                 Constants.transactionTypeMap[accountType] ?: AccountType.DEFAULT_UNSPECIFIED
-
-            activityBinding?.activity?.let {
-                LibertyHorizonSDK.startBalanceEnquiryDialogActivity(
-                    activity = it,
-                    accountType = accountTypeEnum,
-                    terminalId = tID,
-                    retrievalReferenceNumber = RetrievalReferenceNumber(rrn)
-                )
+            if(isSdkInitialised) {
+                activityBinding?.activity?.let {
+                    LibertyHorizonSDK.startBalanceEnquiryDialogActivity(
+                            activity = it,
+                            accountType = accountTypeEnum,
+                            isOfflineTransaction = isOfflineTransaction,
+                            retrievalReferenceNumber = RetrievalReferenceNumber(rrn)
+                    )
+                }
+            } else {
+                Timber.tag(TAG).d("Have you called [initialise]?")
             }
         }
 
     }
 
-    override fun purchase(
-        amount: String,
-        accountType: String,
-        rrn: String,
-        result: Pigeon.Result<Pigeon.TransactionDataResponse>?
-    ) {
+    override fun initialise(environment: LibertyEmv.Environment, result: LibertyEmv.Result<Void>) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
-            LibertyHorizonSDK.initialize(activityBinding!!.activity, environment = Environment.Live)
+            val environmentTypeEnum =
+                    Constants.enviromentTypeMap[environment]
 
-            delay(1000)
+            if (environmentTypeEnum != null) {
+                LibertyHorizonSDK.initialize(activityBinding!!.activity, environment = environmentTypeEnum)
+                isSdkInitialised = true
+            }
+        }
+    }
+
+    override fun purchase(amount: String, accountType: LibertyEmv.AccountType, rrn: String, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>?) {
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
             resultCallback = result
             val accountTypeEnum =
                 Constants.transactionTypeMap[accountType] ?: AccountType.DEFAULT_UNSPECIFIED
 
-            activityBinding?.activity?.let {
-                LibertyHorizonSDK.startPurchaseActivity(
-                    activity = it,
-                    transactionAmount = TransactionAmount(amount),
-                    accountType = accountTypeEnum,
-                    retrievalReferenceNumber = RetrievalReferenceNumber(rrn)
-                )
+            if(isSdkInitialised) {
+                activityBinding?.activity?.let {
+                    LibertyHorizonSDK.startPurchaseActivity(
+                            activity = it,
+                            transactionAmount = TransactionAmount(amount),
+                            accountType = accountTypeEnum,
+                            retrievalReferenceNumber = RetrievalReferenceNumber(rrn)
+                    )
+                }
+            }else {
+                Timber.tag(TAG).d("Have you called [initialise]?")
             }
         }
 
     }
 
 
-    override fun performKeyExchange(result: Pigeon.Result<Pigeon.KeyExchangeResponse>?) {
+    override fun performKeyExchange(result: LibertyEmv.Result<LibertyEmv.KeyExchangeResponse>?) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
-            val response = LibertyHorizonSDK.doKeyExchange()
-            val state = if (response) DeviceState.SUCCESSFUL.value else DeviceState.ERROR.value
-            val keyExchangeResponse = Pigeon.KeyExchangeResponse().apply {
-                deviceState = state
-                isSuccessful = response
-                responseData = mapOf(
-                    "message" to "Key exchange service currently unavailable"
-                )
+            if(isSdkInitialised) {
+                val keyExchangeSuccess: Boolean = LibertyHorizonSDK.doKeyExchange()
+
+                if (keyExchangeSuccess) {
+                    //Handle Success
+                    val keyExchangeResponse = LibertyEmv.KeyExchangeResponse().apply {
+                        deviceState = DeviceState.SUCCESSFUL.value
+                        isSuccessful = true
+                        responseData = mapOf(
+                                "message" to "Key exchange successful"
+                        )
+                    }
+                    result?.success(keyExchangeResponse)
+                } else {
+                    // Handle failure
+                    val keyExchangeResponse = LibertyEmv.KeyExchangeResponse().apply {
+                        deviceState = DeviceState.ERROR.value
+                        isSuccessful = false
+                        responseData = mapOf(
+                                "message" to "Key exchange service currently unavailable"
+                        )
+                    }
+                    result?.success(keyExchangeResponse)
+                }
+            }else {
+                Timber.tag(TAG).d("Have you called [initialise]?")
             }
-            result?.success(keyExchangeResponse)
+
+        }
+    }
+
+    override fun print(bitmap: ByteArray, result: LibertyEmv.Result<Void>) {
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            val value = BitmapFactory.decodeByteArray(bitmap,0,bitmap.size)
+            LibertyHorizonSDK.print(value)
         }
     }
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-        Log.d(TAG, "onActivityResult: $resultCode")
-        Log.d(TAG, "onActivityResult:changed")
+        Timber.tag(TAG).d("onActivityResult: %s", resultCode)
+        Timber.tag(TAG).d("onActivityResult:changed")
         val handler = ActivityResultHandler(resultCallback)
         return handler(data, resultCode, requestCode)
     }
 
 
+
 }
+
+

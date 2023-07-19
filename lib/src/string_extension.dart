@@ -1,4 +1,4 @@
-import 'package:liberty_emv/liberty_emv.dart';
+import 'package:liberty_emv/src/liberty_emv.g.dart';
 
 extension Stringify on TransactionDataResponse {
   String stringify() {

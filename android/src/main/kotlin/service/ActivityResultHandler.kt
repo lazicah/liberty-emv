@@ -6,11 +6,11 @@ import com.libertyPay.horizonSDK.common.ActivityRequestAndResultCodes
 import com.libertyPay.horizonSDK.common.TransactionIntentExtras
 import com.libertyPay.horizonSDK.domain.models.PosTransactionException
 import com.libertypay.posclient.api.models.response.TransactionData
-import io.flutter.plugins.Pigeon
+import io.flutter.plugins.LibertyEmv
 import service.dto.PigeonResponseDto
 
 class ActivityResultHandler(
-    private val resultCallback: Pigeon.Result<Pigeon.TransactionDataResponse>?
+    private val resultCallback: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>?
 ) {
 
     private val functionMap =
@@ -83,7 +83,7 @@ class ActivityResultHandler(
         resultCode: Int,
         requestCode: Int
     ): Boolean {
-        val response = Pigeon.TransactionDataResponse().apply {
+        val response = LibertyEmv.TransactionDataResponse().apply {
             deviceState = DeviceState.TRANS_CANCELLED.value
         }
         resultCallback?.success(response)

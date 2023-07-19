@@ -6,8 +6,6 @@ import com.libertypay.posclient.api.Environment
 
 
 class Application : Application() {
-
-
     override fun onCreate() {
         super.onCreate()
         LibertyHorizonSDK.initialize(this, environment = Environment.Live)

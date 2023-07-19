@@ -17,27 +17,27 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
-  final _emvApi = EmvApi();
+
 
   @override
   void initState() {
+    LibertyEmv.instance.initialise(Environment.test);
     super.initState();
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
+  Future<void> enquireBalance() async {
     final res =
-        await _emvApi.enquireBalance("8fdsfs", "SAVINGS", "123456789112");
-    // final res = await _emvApi.purchase("5", "SAVINGS", "123456789112");
-    // final res = await _emvApi.performKeyExchange();
+        await LibertyEmv.instance.enquireBalance(false, AccountType.current, "123456789112");
+
     print(res);
-    print(res.stringify());
+    print(res?.stringify());
   }
 
   Future<void> keyExchange() async {
     try {
-      final response = await _emvApi.performKeyExchange();
-      print(response.stringify());
+      final response = await LibertyEmv.instance.performKeyExchange();
+      print(response?.stringify());
     } on PlatformException catch (e) {
       print(e.code.substring(21));
     }
@@ -48,7 +48,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         floatingActionButton: FloatingActionButton(
-          onPressed: initPlatformState,
+          onPressed: enquireBalance,
         ),
         appBar: AppBar(
           title: const Text('Plugin example app'),
