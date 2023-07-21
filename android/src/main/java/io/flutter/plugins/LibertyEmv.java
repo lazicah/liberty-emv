@@ -82,91 +82,6 @@ public class LibertyEmv {
   }
 
   /** Generated class from Pigeon that represents data sent in messages. */
-  public static final class KeyExchangeResponse {
-    private @Nullable String deviceState;
-
-    public @Nullable String getDeviceState() {
-      return deviceState;
-    }
-
-    public void setDeviceState(@Nullable String setterArg) {
-      this.deviceState = setterArg;
-    }
-
-    private @Nullable Boolean isSuccessful;
-
-    public @Nullable Boolean getIsSuccessful() {
-      return isSuccessful;
-    }
-
-    public void setIsSuccessful(@Nullable Boolean setterArg) {
-      this.isSuccessful = setterArg;
-    }
-
-    private @Nullable Map<String, String> responseData;
-
-    public @Nullable Map<String, String> getResponseData() {
-      return responseData;
-    }
-
-    public void setResponseData(@Nullable Map<String, String> setterArg) {
-      this.responseData = setterArg;
-    }
-
-    public static final class Builder {
-
-      private @Nullable String deviceState;
-
-      public @NonNull Builder setDeviceState(@Nullable String setterArg) {
-        this.deviceState = setterArg;
-        return this;
-      }
-
-      private @Nullable Boolean isSuccessful;
-
-      public @NonNull Builder setIsSuccessful(@Nullable Boolean setterArg) {
-        this.isSuccessful = setterArg;
-        return this;
-      }
-
-      private @Nullable Map<String, String> responseData;
-
-      public @NonNull Builder setResponseData(@Nullable Map<String, String> setterArg) {
-        this.responseData = setterArg;
-        return this;
-      }
-
-      public @NonNull KeyExchangeResponse build() {
-        KeyExchangeResponse pigeonReturn = new KeyExchangeResponse();
-        pigeonReturn.setDeviceState(deviceState);
-        pigeonReturn.setIsSuccessful(isSuccessful);
-        pigeonReturn.setResponseData(responseData);
-        return pigeonReturn;
-      }
-    }
-
-    @NonNull
-    ArrayList<Object> toList() {
-      ArrayList<Object> toListResult = new ArrayList<Object>(3);
-      toListResult.add(deviceState);
-      toListResult.add(isSuccessful);
-      toListResult.add(responseData);
-      return toListResult;
-    }
-
-    static @NonNull KeyExchangeResponse fromList(@NonNull ArrayList<Object> list) {
-      KeyExchangeResponse pigeonResult = new KeyExchangeResponse();
-      Object deviceState = list.get(0);
-      pigeonResult.setDeviceState((String) deviceState);
-      Object isSuccessful = list.get(1);
-      pigeonResult.setIsSuccessful((Boolean) isSuccessful);
-      Object responseData = list.get(2);
-      pigeonResult.setResponseData((Map<String, String>) responseData);
-      return pigeonResult;
-    }
-  }
-
-  /** Generated class from Pigeon that represents data sent in messages. */
   public static final class TransactionDataResponse {
     private @Nullable String amount;
 
@@ -318,6 +233,16 @@ public class LibertyEmv {
       this.transactionType = setterArg;
     }
 
+    private @Nullable Boolean isSuccessful;
+
+    public @Nullable Boolean getIsSuccessful() {
+      return isSuccessful;
+    }
+
+    public void setIsSuccessful(@Nullable Boolean setterArg) {
+      this.isSuccessful = setterArg;
+    }
+
     public static final class Builder {
 
       private @Nullable String amount;
@@ -425,6 +350,13 @@ public class LibertyEmv {
         return this;
       }
 
+      private @Nullable Boolean isSuccessful;
+
+      public @NonNull Builder setIsSuccessful(@Nullable Boolean setterArg) {
+        this.isSuccessful = setterArg;
+        return this;
+      }
+
       public @NonNull TransactionDataResponse build() {
         TransactionDataResponse pigeonReturn = new TransactionDataResponse();
         pigeonReturn.setAmount(amount);
@@ -442,13 +374,14 @@ public class LibertyEmv {
         pigeonReturn.setStan(stan);
         pigeonReturn.setTerminalId(terminalId);
         pigeonReturn.setTransactionType(transactionType);
+        pigeonReturn.setIsSuccessful(isSuccessful);
         return pigeonReturn;
       }
     }
 
     @NonNull
     ArrayList<Object> toList() {
-      ArrayList<Object> toListResult = new ArrayList<Object>(15);
+      ArrayList<Object> toListResult = new ArrayList<Object>(16);
       toListResult.add(amount);
       toListResult.add(deviceState);
       toListResult.add(authorizationCode);
@@ -464,6 +397,7 @@ public class LibertyEmv {
       toListResult.add(stan);
       toListResult.add(terminalId);
       toListResult.add(transactionType);
+      toListResult.add(isSuccessful);
       return toListResult;
     }
 
@@ -499,6 +433,8 @@ public class LibertyEmv {
       pigeonResult.setTerminalId((String) terminalId);
       Object transactionType = list.get(14);
       pigeonResult.setTransactionType((String) transactionType);
+      Object isSuccessful = list.get(15);
+      pigeonResult.setIsSuccessful((Boolean) isSuccessful);
       return pigeonResult;
     }
   }
@@ -519,8 +455,6 @@ public class LibertyEmv {
     protected Object readValueOfType(byte type, @NonNull ByteBuffer buffer) {
       switch (type) {
         case (byte) 128:
-          return KeyExchangeResponse.fromList((ArrayList<Object>) readValue(buffer));
-        case (byte) 129:
           return TransactionDataResponse.fromList((ArrayList<Object>) readValue(buffer));
         default:
           return super.readValueOfType(type, buffer);
@@ -529,11 +463,8 @@ public class LibertyEmv {
 
     @Override
     protected void writeValue(@NonNull ByteArrayOutputStream stream, Object value) {
-      if (value instanceof KeyExchangeResponse) {
+      if (value instanceof TransactionDataResponse) {
         stream.write(128);
-        writeValue(stream, ((KeyExchangeResponse) value).toList());
-      } else if (value instanceof TransactionDataResponse) {
-        stream.write(129);
         writeValue(stream, ((TransactionDataResponse) value).toList());
       } else {
         super.writeValue(stream, value);
@@ -544,15 +475,15 @@ public class LibertyEmv {
   /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
   public interface LibertyEmvApi {
 
-    void initialise(@NonNull Environment environment, @Nullable Result<TransactionDataResponse> result);
+    void initialise(@NonNull Environment environment, @NonNull Result<TransactionDataResponse> result);
 
-    void enquireBalance(@NonNull Boolean isOfflineTransaction, @NonNull AccountType accountType, @NonNull String rrn, @Nullable Result<TransactionDataResponse> result);
+    void enquireBalance(@NonNull Boolean isOfflineTransaction, @NonNull AccountType accountType, @NonNull String rrn, @NonNull Result<TransactionDataResponse> result);
 
-    void purchase(@NonNull String amount, @NonNull AccountType accountType, @NonNull String rrn, @Nullable Result<TransactionDataResponse> result);
+    void purchase(@NonNull String amount, @NonNull AccountType accountType, @NonNull String rrn, @NonNull Result<TransactionDataResponse> result);
 
-    void performKeyExchange(@Nullable Result<KeyExchangeResponse> result);
+    void performKeyExchange(@NonNull Result<TransactionDataResponse> result);
 
-    void print(@NonNull byte[] bitmap, @Nullable Result<TransactionDataResponse> result);
+    void print(@NonNull byte[] bitmap, @NonNull Result<TransactionDataResponse> result);
 
     /** The codec used by LibertyEmvApi. */
     static @NonNull MessageCodec<Object> getCodec() {
@@ -659,9 +590,9 @@ public class LibertyEmv {
           channel.setMessageHandler(
               (message, reply) -> {
                 ArrayList<Object> wrapped = new ArrayList<Object>();
-                Result<KeyExchangeResponse> resultCallback =
-                    new Result<KeyExchangeResponse>() {
-                      public void success(KeyExchangeResponse result) {
+                Result<TransactionDataResponse> resultCallback =
+                    new Result<TransactionDataResponse>() {
+                      public void success(TransactionDataResponse result) {
                         wrapped.add(0, result);
                         reply.reply(wrapped);
                       }

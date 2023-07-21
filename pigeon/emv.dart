@@ -16,13 +16,6 @@ enum AccountType {
 
 enum Environment { live, test }
 
-class KeyExchangeResponse {
-  final String? deviceState;
-  final bool? isSuccessful;
-  final Map<String?, String?>? responseData;
-
-  KeyExchangeResponse(this.deviceState, this.isSuccessful, this.responseData);
-}
 
 class TransactionDataResponse {
   final String? amount;
@@ -55,6 +48,8 @@ class TransactionDataResponse {
 
   final String? transactionType;
 
+  final bool? isSuccessful;
+
   TransactionDataResponse(
     this.amount,
     this.authorizationCode,
@@ -70,28 +65,28 @@ class TransactionDataResponse {
     this.stan,
     this.terminalId,
     this.transactionType,
-    this.deviceState,
+    this.deviceState, this.isSuccessful,
   );
 }
 
 @HostApi()
 abstract class LibertyEmvApi {
   @async
-  TransactionDataResponse? initialise(Environment environment);
+  TransactionDataResponse initialise(Environment environment);
   @async
-  TransactionDataResponse? enquireBalance(
+  TransactionDataResponse enquireBalance(
     bool isOfflineTransaction,
     AccountType accountType,
     String rrn,
   );
   @async
-  TransactionDataResponse? purchase(
+  TransactionDataResponse purchase(
     String amount,
     AccountType accountType,
     String rrn,
   );
   @async
-  KeyExchangeResponse? performKeyExchange();
+  TransactionDataResponse performKeyExchange();
   @async
-  TransactionDataResponse? print(Uint8List bitmap);
+  TransactionDataResponse print(Uint8List bitmap);
 }

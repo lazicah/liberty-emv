@@ -6,7 +6,3 @@ extension Stringify on TransactionDataResponse {
   }
 }
 
-extension StringifyKE on KeyExchangeResponse {
-  String stringify() =>
-      'KeyExchangeResponse(deviceState: $deviceState, isSuccessful: $isSuccessful, responseData: $responseData)';
-}

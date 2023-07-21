@@ -11,11 +11,11 @@ class LibertyEmv {
 
   final LibertyEmvApi _api = LibertyEmvApi();
 
-  Future<TransactionDataResponse?> initialise(Environment environment) async {
+  Future<TransactionDataResponse> initialise(Environment environment) async {
     return _api.initialise(environment);
   }
 
-  Future<TransactionDataResponse?> enquireBalance(
+  Future<TransactionDataResponse> enquireBalance(
     bool isOfflineTransaction,
     AccountType accountType,
     String rrn,
@@ -23,7 +23,7 @@ class LibertyEmv {
     return _api.enquireBalance(isOfflineTransaction, accountType, rrn);
   }
 
-  Future<TransactionDataResponse?> purchase(
+  Future<TransactionDataResponse> purchase(
     String amount,
     AccountType accountType,
     String rrn,
@@ -31,11 +31,11 @@ class LibertyEmv {
     return _api.purchase(amount, accountType, rrn);
   }
 
-  Future<KeyExchangeResponse?> performKeyExchange() async {
+  Future<TransactionDataResponse> performKeyExchange() async {
     return _api.performKeyExchange();
   }
 
-  Future<TransactionDataResponse?> print(Uint8List bitmap) async {
+  Future<TransactionDataResponse> print(Uint8List bitmap) async {
     return _api.print(bitmap);
   }
 }

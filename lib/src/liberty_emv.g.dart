@@ -22,37 +22,6 @@ enum Environment {
   test,
 }
 
-class KeyExchangeResponse {
-  KeyExchangeResponse({
-    this.deviceState,
-    this.isSuccessful,
-    this.responseData,
-  });
-
-  String? deviceState;
-
-  bool? isSuccessful;
-
-  Map<String?, String?>? responseData;
-
-  Object encode() {
-    return <Object?>[
-      deviceState,
-      isSuccessful,
-      responseData,
-    ];
-  }
-
-  static KeyExchangeResponse decode(Object result) {
-    result as List<Object?>;
-    return KeyExchangeResponse(
-      deviceState: result[0] as String?,
-      isSuccessful: result[1] as bool?,
-      responseData: (result[2] as Map<Object?, Object?>?)?.cast<String?, String?>(),
-    );
-  }
-}
-
 class TransactionDataResponse {
   TransactionDataResponse({
     this.amount,
@@ -70,6 +39,7 @@ class TransactionDataResponse {
     this.stan,
     this.terminalId,
     this.transactionType,
+    this.isSuccessful,
   });
 
   String? amount;
@@ -102,6 +72,8 @@ class TransactionDataResponse {
 
   String? transactionType;
 
+  bool? isSuccessful;
+
   Object encode() {
     return <Object?>[
       amount,
@@ -119,6 +91,7 @@ class TransactionDataResponse {
       stan,
       terminalId,
       transactionType,
+      isSuccessful,
     ];
   }
 
@@ -140,6 +113,7 @@ class TransactionDataResponse {
       stan: result[12] as String?,
       terminalId: result[13] as String?,
       transactionType: result[14] as String?,
+      isSuccessful: result[15] as bool?,
     );
   }
 }
@@ -148,11 +122,8 @@ class _LibertyEmvApiCodec extends StandardMessageCodec {
   const _LibertyEmvApiCodec();
   @override
   void writeValue(WriteBuffer buffer, Object? value) {
-    if (value is KeyExchangeResponse) {
+    if (value is TransactionDataResponse) {
       buffer.putUint8(128);
-      writeValue(buffer, value.encode());
-    } else if (value is TransactionDataResponse) {
-      buffer.putUint8(129);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -163,8 +134,6 @@ class _LibertyEmvApiCodec extends StandardMessageCodec {
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
       case 128: 
-        return KeyExchangeResponse.decode(readValue(buffer)!);
-      case 129: 
         return TransactionDataResponse.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -182,7 +151,7 @@ class LibertyEmvApi {
 
   static const MessageCodec<Object?> codec = _LibertyEmvApiCodec();
 
-  Future<TransactionDataResponse?> initialise(Environment arg_environment) async {
+  Future<TransactionDataResponse> initialise(Environment arg_environment) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.LibertyEmvApi.initialise', codec,
         binaryMessenger: _binaryMessenger);
@@ -199,12 +168,17 @@ class LibertyEmvApi {
         message: replyList[1] as String?,
         details: replyList[2],
       );
+    } else if (replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
     } else {
-      return (replyList[0] as TransactionDataResponse?);
+      return (replyList[0] as TransactionDataResponse?)!;
     }
   }
 
-  Future<TransactionDataResponse?> enquireBalance(bool arg_isOfflineTransaction, AccountType arg_accountType, String arg_rrn) async {
+  Future<TransactionDataResponse> enquireBalance(bool arg_isOfflineTransaction, AccountType arg_accountType, String arg_rrn) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.LibertyEmvApi.enquireBalance', codec,
         binaryMessenger: _binaryMessenger);
@@ -221,12 +195,17 @@ class LibertyEmvApi {
         message: replyList[1] as String?,
         details: replyList[2],
       );
+    } else if (replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
     } else {
-      return (replyList[0] as TransactionDataResponse?);
+      return (replyList[0] as TransactionDataResponse?)!;
     }
   }
 
-  Future<TransactionDataResponse?> purchase(String arg_amount, AccountType arg_accountType, String arg_rrn) async {
+  Future<TransactionDataResponse> purchase(String arg_amount, AccountType arg_accountType, String arg_rrn) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.LibertyEmvApi.purchase', codec,
         binaryMessenger: _binaryMessenger);
@@ -243,12 +222,17 @@ class LibertyEmvApi {
         message: replyList[1] as String?,
         details: replyList[2],
       );
+    } else if (replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
     } else {
-      return (replyList[0] as TransactionDataResponse?);
+      return (replyList[0] as TransactionDataResponse?)!;
     }
   }
 
-  Future<KeyExchangeResponse?> performKeyExchange() async {
+  Future<TransactionDataResponse> performKeyExchange() async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.LibertyEmvApi.performKeyExchange', codec,
         binaryMessenger: _binaryMessenger);
@@ -265,12 +249,17 @@ class LibertyEmvApi {
         message: replyList[1] as String?,
         details: replyList[2],
       );
+    } else if (replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
     } else {
-      return (replyList[0] as KeyExchangeResponse?);
+      return (replyList[0] as TransactionDataResponse?)!;
     }
   }
 
-  Future<TransactionDataResponse?> print(Uint8List arg_bitmap) async {
+  Future<TransactionDataResponse> print(Uint8List arg_bitmap) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.LibertyEmvApi.print', codec,
         binaryMessenger: _binaryMessenger);
@@ -287,8 +276,13 @@ class LibertyEmvApi {
         message: replyList[1] as String?,
         details: replyList[2],
       );
+    } else if (replyList[0] == null) {
+      throw PlatformException(
+        code: 'null-error',
+        message: 'Host platform returned null value for non-null return value.',
+      );
     } else {
-      return (replyList[0] as TransactionDataResponse?);
+      return (replyList[0] as TransactionDataResponse?)!;
     }
   }
 }

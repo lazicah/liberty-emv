@@ -34,7 +34,7 @@ class EmvService(private val context: Context) : LibertyEmv.LibertyEmvApi,
         binding.addActivityResultListener(this)
     }
 
-    override fun enquireBalance(isOfflineTransaction: Boolean, accountType: LibertyEmv.AccountType, rrn: String, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>?) {
+    override fun enquireBalance(isOfflineTransaction: Boolean, accountType: LibertyEmv.AccountType, rrn: String, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
             resultCallback = result
@@ -56,7 +56,7 @@ class EmvService(private val context: Context) : LibertyEmv.LibertyEmvApi,
 
     }
 
-    override fun initialise(environment: LibertyEmv.Environment, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>?) {
+    override fun initialise(environment: LibertyEmv.Environment, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
             val environmentTypeEnum =
@@ -75,7 +75,7 @@ class EmvService(private val context: Context) : LibertyEmv.LibertyEmvApi,
         }
     }
 
-    override fun purchase(amount: String, accountType: LibertyEmv.AccountType, rrn: String, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>?) {
+    override fun purchase(amount: String, accountType: LibertyEmv.AccountType, rrn: String, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
             resultCallback = result
@@ -99,7 +99,7 @@ class EmvService(private val context: Context) : LibertyEmv.LibertyEmvApi,
     }
 
 
-    override fun performKeyExchange(result: LibertyEmv.Result<LibertyEmv.KeyExchangeResponse>?) {
+    override fun performKeyExchange(result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
             if(isSdkInitialised) {
@@ -107,24 +107,20 @@ class EmvService(private val context: Context) : LibertyEmv.LibertyEmvApi,
 
                 if (keyExchangeSuccess) {
                     //Handle Success
-                    val keyExchangeResponse = LibertyEmv.KeyExchangeResponse().apply {
+                    val keyExchangeResponse = LibertyEmv.TransactionDataResponse().apply {
                         deviceState = DeviceState.SUCCESSFUL.value
                         isSuccessful = true
-                        responseData = mapOf(
-                                "message" to "Key exchange successful"
-                        )
+                        responseMessage = "Key exchange successful"
                     }
-                    result?.success(keyExchangeResponse)
+                    result.success(keyExchangeResponse)
                 } else {
                     // Handle failure
-                    val keyExchangeResponse = LibertyEmv.KeyExchangeResponse().apply {
+                    val keyExchangeResponse = LibertyEmv.TransactionDataResponse().apply {
                         deviceState = DeviceState.ERROR.value
                         isSuccessful = false
-                        responseData = mapOf(
-                                "message" to "Key exchange service currently unavailable"
-                        )
+                        responseMessage = "Key exchange service currently unavailable"
                     }
-                    result?.success(keyExchangeResponse)
+                    result.success(keyExchangeResponse)
                 }
             }else {
                 Timber.tag(TAG).d("Have you called [initialise]?")
@@ -133,7 +129,7 @@ class EmvService(private val context: Context) : LibertyEmv.LibertyEmvApi,
         }
     }
 
-    override fun print(bitmap: ByteArray, result:LibertyEmv.Result<LibertyEmv.TransactionDataResponse>?) {
+    override fun print(bitmap: ByteArray, result:LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
             resultCallback = result
