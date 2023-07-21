@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:liberty_emv/src/liberty_emv.g.dart';
 
-class LibertyEmv{
+class LibertyEmv {
   LibertyEmv._privateConstructor();
 
   static final LibertyEmv _instance = LibertyEmv._privateConstructor();
@@ -11,27 +11,27 @@ class LibertyEmv{
 
   final LibertyEmvApi _api = LibertyEmvApi();
 
-
-  Future<void> initialise(Environment environment) async{
+  Future<void> initialise(Environment environment) async {
     return _api.initialise(environment);
   }
 
   Future<TransactionDataResponse?> enquireBalance(
-      bool isOfflineTransaction, AccountType accountType,
-      String rrn,
-      ) async {
+    bool isOfflineTransaction,
+    AccountType accountType,
+    String rrn,
+  ) async {
     return _api.enquireBalance(isOfflineTransaction, accountType, rrn);
   }
 
   Future<TransactionDataResponse?> purchase(
-      String amount,
-      AccountType accountType,
-      String rrn,
-      )async{
+    String amount,
+    AccountType accountType,
+    String rrn,
+  ) async {
     return _api.purchase(amount, accountType, rrn);
   }
 
-  Future<KeyExchangeResponse?> performKeyExchange() async{
+  Future<KeyExchangeResponse?> performKeyExchange() async {
     return _api.performKeyExchange();
   }
 

@@ -5,9 +5,16 @@ import 'package:pigeon/pigeon.dart';
   dartOut: 'lib/src/liberty_emv.g.dart',
   javaOut: 'android/src/main/java/io/flutter/plugins/LibertyEmv.java',
 ))
+enum AccountType {
+  defaultUnspecified,
+  savings,
+  current,
+  credit,
+  universal,
+  investment
+}
 
-enum AccountType{defaultUnspecified,savings,current,credit,universal,investment}
-enum Environment{live,test}
+enum Environment { live, test }
 
 class KeyExchangeResponse {
   final String? deviceState;
@@ -73,7 +80,8 @@ abstract class LibertyEmvApi {
   void initialise(Environment environment);
   @async
   TransactionDataResponse? enquireBalance(
-    bool isOfflineTransaction, AccountType accountType,
+    bool isOfflineTransaction,
+    AccountType accountType,
     String rrn,
   );
   @async

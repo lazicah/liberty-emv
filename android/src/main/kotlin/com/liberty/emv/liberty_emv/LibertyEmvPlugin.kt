@@ -16,7 +16,7 @@ import io.flutter.plugin.common.MethodChannel.Result
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.PluginRegistry
-import io.flutter.plugins.Pigeon
+import io.flutter.plugins.LibertyEmv
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -32,7 +32,7 @@ class LibertyEmvPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
         emvService = EmvService(flutterPluginBinding.applicationContext)
-        Pigeon.EmvApi.setup(flutterPluginBinding.binaryMessenger, emvService)
+        LibertyEmv.LibertyEmvApi.setup(flutterPluginBinding.binaryMessenger, emvService)
     }
 
 

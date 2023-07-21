@@ -18,7 +18,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   String _platformVersion = 'Unknown';
 
-
   @override
   void initState() {
     LibertyEmv.instance.initialise(Environment.test);
@@ -27,8 +26,8 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> enquireBalance() async {
-    final res =
-        await LibertyEmv.instance.enquireBalance(false, AccountType.current, "123456789112");
+    final res = await LibertyEmv.instance
+        .enquireBalance(false, AccountType.savings, "123456789112");
 
     print(res);
     print(res?.stringify());
