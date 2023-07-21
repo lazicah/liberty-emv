@@ -182,7 +182,7 @@ class LibertyEmvApi {
 
   static const MessageCodec<Object?> codec = _LibertyEmvApiCodec();
 
-  Future<void> initialise(Environment arg_environment) async {
+  Future<TransactionDataResponse?> initialise(Environment arg_environment) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.LibertyEmvApi.initialise', codec,
         binaryMessenger: _binaryMessenger);
@@ -200,7 +200,7 @@ class LibertyEmvApi {
         details: replyList[2],
       );
     } else {
-      return;
+      return (replyList[0] as TransactionDataResponse?);
     }
   }
 
@@ -270,7 +270,7 @@ class LibertyEmvApi {
     }
   }
 
-  Future<void> print(Uint8List arg_bitmap) async {
+  Future<TransactionDataResponse?> print(Uint8List arg_bitmap) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.LibertyEmvApi.print', codec,
         binaryMessenger: _binaryMessenger);
@@ -288,7 +288,7 @@ class LibertyEmvApi {
         details: replyList[2],
       );
     } else {
-      return;
+      return (replyList[0] as TransactionDataResponse?);
     }
   }
 }

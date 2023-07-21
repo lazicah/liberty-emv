@@ -544,7 +544,7 @@ public class LibertyEmv {
   /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
   public interface LibertyEmvApi {
 
-    void initialise(@NonNull Environment environment, @NonNull Result<Void> result);
+    void initialise(@NonNull Environment environment, @Nullable Result<TransactionDataResponse> result);
 
     void enquireBalance(@NonNull Boolean isOfflineTransaction, @NonNull AccountType accountType, @NonNull String rrn, @Nullable Result<TransactionDataResponse> result);
 
@@ -552,7 +552,7 @@ public class LibertyEmv {
 
     void performKeyExchange(@Nullable Result<KeyExchangeResponse> result);
 
-    void print(@NonNull byte[] bitmap, @NonNull Result<Void> result);
+    void print(@NonNull byte[] bitmap, @Nullable Result<TransactionDataResponse> result);
 
     /** The codec used by LibertyEmvApi. */
     static @NonNull MessageCodec<Object> getCodec() {
@@ -570,10 +570,10 @@ public class LibertyEmv {
                 ArrayList<Object> wrapped = new ArrayList<Object>();
                 ArrayList<Object> args = (ArrayList<Object>) message;
                 Environment environmentArg = args.get(0) == null ? null : Environment.values()[(int) args.get(0)];
-                Result<Void> resultCallback =
-                    new Result<Void>() {
-                      public void success(Void result) {
-                        wrapped.add(0, null);
+                Result<TransactionDataResponse> resultCallback =
+                    new Result<TransactionDataResponse>() {
+                      public void success(TransactionDataResponse result) {
+                        wrapped.add(0, result);
                         reply.reply(wrapped);
                       }
 
@@ -688,10 +688,10 @@ public class LibertyEmv {
                 ArrayList<Object> wrapped = new ArrayList<Object>();
                 ArrayList<Object> args = (ArrayList<Object>) message;
                 byte[] bitmapArg = (byte[]) args.get(0);
-                Result<Void> resultCallback =
-                    new Result<Void>() {
-                      public void success(Void result) {
-                        wrapped.add(0, null);
+                Result<TransactionDataResponse> resultCallback =
+                    new Result<TransactionDataResponse>() {
+                      public void success(TransactionDataResponse result) {
+                        wrapped.add(0, result);
                         reply.reply(wrapped);
                       }
 

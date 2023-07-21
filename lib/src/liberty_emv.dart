@@ -11,7 +11,7 @@ class LibertyEmv {
 
   final LibertyEmvApi _api = LibertyEmvApi();
 
-  Future<void> initialise(Environment environment) async {
+  Future<TransactionDataResponse?> initialise(Environment environment) async {
     return _api.initialise(environment);
   }
 
@@ -35,7 +35,7 @@ class LibertyEmv {
     return _api.performKeyExchange();
   }
 
-  Future<void> print(Uint8List bitmap) async {
+  Future<TransactionDataResponse?> print(Uint8List bitmap) async {
     return _api.print(bitmap);
   }
 }

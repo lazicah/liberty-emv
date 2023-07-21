@@ -77,7 +77,7 @@ class TransactionDataResponse {
 @HostApi()
 abstract class LibertyEmvApi {
   @async
-  void initialise(Environment environment);
+  TransactionDataResponse? initialise(Environment environment);
   @async
   TransactionDataResponse? enquireBalance(
     bool isOfflineTransaction,
@@ -93,5 +93,5 @@ abstract class LibertyEmvApi {
   @async
   KeyExchangeResponse? performKeyExchange();
   @async
-  void print(Uint8List bitmap);
+  TransactionDataResponse? print(Uint8List bitmap);
 }
