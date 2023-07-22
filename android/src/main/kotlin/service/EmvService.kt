@@ -57,21 +57,23 @@ class EmvService(private val context: Context) : LibertyEmv.LibertyEmvApi,
     }
 
     override fun initialise(environment: LibertyEmv.Environment, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
-        val scope = CoroutineScope(Dispatchers.IO)
-        scope.launch {
-            val environmentTypeEnum =
-                    Constants.enviromentTypeMap[environment]
+        val environmentTypeEnum =
+                Constants.enviromentTypeMap[environment]
 
-            if (environmentTypeEnum != null) {
-                Timber.tag(TAG).d("initialize: sdk initializing")
-                try {
-                    LibertyHorizonSDK.initialize(activityBinding!!.activity, environment = environmentTypeEnum)
-                    isSdkInitialised = true
-                } catch (e: Exception) {
-                    Timber.tag(TAG).d("initialize error: %s", e.message)
+        if (environmentTypeEnum != null) {
+            Timber.tag(TAG).d("initialize: sdk initializing")
+            try {
+                LibertyHorizonSDK.initialize(activityBinding!!.activity, environment = environmentTypeEnum)
+                isSdkInitialised = true
+                val keyExchangeResponse = LibertyEmv.TransactionDataResponse().apply {
+                    deviceState = DeviceState.SUCCESSFUL.value
+                    responseMessage = "Initialised"
                 }
-
+                result.success(keyExchangeResponse)
+            } catch (e: Exception) {
+                Timber.tag(TAG).d("initialize error: %s", e.message)
             }
+
         }
     }
 
