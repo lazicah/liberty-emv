@@ -61,10 +61,11 @@ class EmvService(private val context: Context) : LibertyEmv.LibertyEmvApi,
                 Constants.enviromentTypeMap[environment]
 
         if (environmentTypeEnum != null) {
-            Timber.tag(TAG).d("initialize: sdk initializing")
+            Timber.tag(TAG).d("initialize: sdk initializing as $environmentTypeEnum")
             try {
                 LibertyHorizonSDK.initialize(activityBinding!!.activity, environment = environmentTypeEnum)
                 isSdkInitialised = true
+
                 val keyExchangeResponse = LibertyEmv.TransactionDataResponse().apply {
                     deviceState = DeviceState.SUCCESSFUL.value
                     responseMessage = "Initialised"

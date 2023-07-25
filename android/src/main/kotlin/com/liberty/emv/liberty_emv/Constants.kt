@@ -19,8 +19,6 @@ class Constants {
         val enviromentTypeMap = mapOf(
                 io.flutter.plugins.LibertyEmv.Environment.LIVE to Environment.Live,
                 io.flutter.plugins.LibertyEmv.Environment.TEST to Environment.Test,
-
-
                 )
 
     }
