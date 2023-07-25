@@ -1,9 +1,8 @@
 group 'com.liberty.emv.liberty_emv'
 version '1.0-SNAPSHOT'
-
 buildscript {
 //    ext.kotlin_version = '1.8.10'
-    ext.kotlin_version = '1.8.0'
+    ext.kotlin_version = '1.9.0'
     repositories {
         google()
         mavenCentral()
@@ -22,8 +21,13 @@ allprojects {
     }
 }
 
+
+
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: 'com.google.devtools.ksp'
+
 
 android {
     compileSdkVersion 31
@@ -47,6 +51,9 @@ android {
 }
 
 dependencies {
+    def room_version = "2.5.2"
+    implementation 'androidx.core:core-ktx:+'
+    implementation 'androidx.core:core-ktx:+'
     compileOnly project(path:':horizon_isw')
     compileOnly project(path:':pos_emv')
 
@@ -72,13 +79,17 @@ dependencies {
 
     implementation("io.ktor:ktor-client-cio:2.0.3")
 
+    // room db
+    implementation "androidx.room:room-runtime:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
+    ksp "androidx.room:room-compiler:$room_version"
+
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 
     //Used for encrypted SharedPrefs
     implementation 'androidx.security:security-crypto-ktx:1.1.0-alpha03'
 
     implementation 'com.google.guava:guava:28.0-android'
-
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.0")
     // to use java LocalDateTime on APi levels below 26
 
     // Retrofit and Coroutines

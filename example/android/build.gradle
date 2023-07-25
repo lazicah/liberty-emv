@@ -1,5 +1,7 @@
+
+
 buildscript {
-    ext.kotlin_version = '1.8.0'
+    ext.kotlin_version = '1.9.0'
     repositories {
         google()
         mavenCentral()
@@ -10,6 +12,11 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
+
+plugins {
+    id 'com.google.devtools.ksp' version '1.9.0-1.0.11'
+}
+
 
 allprojects {
     repositories {

@@ -5,7 +5,7 @@ import com.liberty.emv.liberty_emv.DeviceState
 import com.libertyPay.horizonSDK.common.ActivityRequestAndResultCodes
 import com.libertyPay.horizonSDK.common.TransactionIntentExtras
 import com.libertyPay.horizonSDK.domain.models.PosTransactionException
-import com.libertypay.posclient.api.models.response.TransactionData
+import com.libertypay.posclient.remoteApi.models.response.TransactionData
 import io.flutter.plugins.LibertyEmv
 import service.dto.PigeonResponseDto
 

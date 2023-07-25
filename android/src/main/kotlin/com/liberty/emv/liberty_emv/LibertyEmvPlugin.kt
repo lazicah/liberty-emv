@@ -6,8 +6,6 @@ import android.util.Log
 import androidx.annotation.NonNull
 import com.libertyPay.horizonSDK.LibertyHorizonSDK
 import com.libertyPay.horizonSDK.Preferences
-import com.libertypay.posclient.PosRemoteClient
-import com.libertypay.posclient.api.Environment
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall

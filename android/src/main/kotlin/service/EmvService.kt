@@ -11,7 +11,6 @@ import com.libertyPay.horizonSDK.LibertyHorizonSDK
 import com.libertyPay.horizonSDK.domain.models.AccountType
 import com.libertyPay.horizonSDK.domain.models.RetrievalReferenceNumber
 import com.libertyPay.horizonSDK.domain.models.TransactionAmount
-import com.libertypay.posclient.api.Environment
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugins.LibertyEmv
@@ -37,7 +36,7 @@ class EmvService(private val context: Context) : LibertyEmv.LibertyEmvApi,
     override fun enquireBalance(isOfflineTransaction: Boolean, accountType: LibertyEmv.AccountType, rrn: String, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
-            LibertyHorizonSDK.initialize(activityBinding!!.activity, environment = Environment.Live)
+            LibertyHorizonSDK.initialize(activityBinding!!.activity)
             resultCallback = result
             val accountTypeEnum =
                 Constants.transactionTypeMap[accountType] ?: AccountType.DEFAULT_UNSPECIFIED
@@ -58,13 +57,11 @@ class EmvService(private val context: Context) : LibertyEmv.LibertyEmvApi,
     }
 
     override fun initialise(environment: LibertyEmv.Environment, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
-        val environmentTypeEnum =
-                Constants.enviromentTypeMap[environment]
 
-        if (environmentTypeEnum != null) {
-            Timber.tag(TAG).d("initialize: sdk initializing as $environmentTypeEnum")
+
+            Timber.tag(TAG).d("initialize: sdk initializing")
             try {
-                LibertyHorizonSDK.initialize(activityBinding!!.activity, environment = environmentTypeEnum)
+                LibertyHorizonSDK.initialize(activityBinding!!.activity)
                 isSdkInitialised = true
 
                 val keyExchangeResponse = LibertyEmv.TransactionDataResponse().apply {
@@ -76,13 +73,13 @@ class EmvService(private val context: Context) : LibertyEmv.LibertyEmvApi,
                 Timber.tag(TAG).d("initialize error: %s", e.message)
             }
 
-        }
+
     }
 
     override fun purchase(amount: String, accountType: LibertyEmv.AccountType, rrn: String, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
-            LibertyHorizonSDK.initialize(activityBinding!!.activity, environment = Environment.Live)
+            LibertyHorizonSDK.initialize(activityBinding!!.activity)
             resultCallback = result
             val accountTypeEnum =
                 Constants.transactionTypeMap[accountType] ?: AccountType.DEFAULT_UNSPECIFIED
@@ -107,7 +104,7 @@ class EmvService(private val context: Context) : LibertyEmv.LibertyEmvApi,
     override fun performKeyExchange(result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
-            LibertyHorizonSDK.initialize(activityBinding!!.activity, environment = Environment.Live)
+            LibertyHorizonSDK.initialize(activityBinding!!.activity)
             if(isSdkInitialised) {
                 val keyExchangeSuccess: Boolean = LibertyHorizonSDK.doKeyExchange()
 
