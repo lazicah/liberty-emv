@@ -37,6 +37,7 @@ class EmvService(private val context: Context) : LibertyEmv.LibertyEmvApi,
     override fun enquireBalance(isOfflineTransaction: Boolean, accountType: LibertyEmv.AccountType, rrn: String, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
+            LibertyHorizonSDK.initialize(activityBinding!!.activity, environment = Environment.Live)
             resultCallback = result
             val accountTypeEnum =
                 Constants.transactionTypeMap[accountType] ?: AccountType.DEFAULT_UNSPECIFIED
@@ -81,6 +82,7 @@ class EmvService(private val context: Context) : LibertyEmv.LibertyEmvApi,
     override fun purchase(amount: String, accountType: LibertyEmv.AccountType, rrn: String, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
+            LibertyHorizonSDK.initialize(activityBinding!!.activity, environment = Environment.Live)
             resultCallback = result
             val accountTypeEnum =
                 Constants.transactionTypeMap[accountType] ?: AccountType.DEFAULT_UNSPECIFIED
@@ -105,6 +107,7 @@ class EmvService(private val context: Context) : LibertyEmv.LibertyEmvApi,
     override fun performKeyExchange(result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
+            LibertyHorizonSDK.initialize(activityBinding!!.activity, environment = Environment.Live)
             if(isSdkInitialised) {
                 val keyExchangeSuccess: Boolean = LibertyHorizonSDK.doKeyExchange()
 
