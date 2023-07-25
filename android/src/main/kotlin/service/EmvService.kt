@@ -135,9 +135,26 @@ class EmvService(private val context: Context) : LibertyEmv.LibertyEmvApi,
     override fun print(bitmap: ByteArray, result:LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
-            resultCallback = result
-            val value = BitmapFactory.decodeByteArray(bitmap,0,bitmap.size)
-            LibertyHorizonSDK.print(value)
+            try {
+                val value = BitmapFactory.decodeByteArray(bitmap,0,bitmap.size)
+                LibertyHorizonSDK.print(value)
+                val printResponse = LibertyEmv.TransactionDataResponse().apply {
+                    deviceState = DeviceState.PRINTING_DONE.value
+                    isSuccessful = true
+                    responseMessage = "Printed"
+                }
+                result?.success(printResponse)
+            } catch (e : Exception){
+                Timber.tag(TAG).e("Printing Error: ${e.message}")
+                val printResponse = LibertyEmv.TransactionDataResponse().apply {
+                    deviceState = DeviceState.PRINTING_FAILED.value
+                    isSuccessful = false
+                    responseMessage = "${e.message}"
+                }
+                result?.success(printResponse)
+            }
+
+
         }
     }
 

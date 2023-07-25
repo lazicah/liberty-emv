@@ -4,6 +4,7 @@ import android.content.ContentValues.TAG
 import android.content.Intent
 import android.util.Log
 import androidx.annotation.NonNull
+import androidx.viewbinding.BuildConfig
 import com.libertyPay.horizonSDK.LibertyHorizonSDK
 import com.libertyPay.horizonSDK.Preferences
 
