@@ -158,16 +158,12 @@ class EmvService(private val context: Context) : LibertyEmv.LibertyEmvApi,
         }
     }
 
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
         Timber.tag(TAG).d("onActivityResult: %s", resultCode)
         Timber.tag(TAG).d("onActivityResult:changed")
         val handler = ActivityResultHandler(resultCallback)
         return handler(data, resultCode, requestCode)
     }
-
-
-
 }
 
 
