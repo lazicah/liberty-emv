@@ -1,2 +1,2 @@
 configurations.maybeCreate("default")
-artifacts.add("default", file('liberty-horizon-pay-pos-SDK-0.7.2.aar'))
+artifacts.add("default", file('liberty-horizon-pay-pos-SDK-0.7.4.aar'))
