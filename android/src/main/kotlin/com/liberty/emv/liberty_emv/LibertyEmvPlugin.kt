@@ -1,37 +1,35 @@
 package com.liberty.emv.liberty_emv
 
 import android.content.ContentValues.TAG
-import android.content.Intent
-import android.util.Log
+import android.os.Build
 import androidx.annotation.NonNull
 import androidx.viewbinding.BuildConfig
-import com.libertyPay.horizonSDK.LibertyHorizonSDK
-import com.libertyPay.horizonSDK.Preferences
-
 import io.flutter.embedding.engine.plugins.FlutterPlugin
+import io.flutter.embedding.engine.plugins.activity.ActivityAware
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import io.flutter.embedding.engine.plugins.activity.ActivityAware
-import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
-import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugins.LibertyEmv
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import service.EmvService
+import service.HorizonEmvService
+import service.NexgoEmvService
 import timber.log.Timber
 
 /** LibertyEmvPlugin */
 class LibertyEmvPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
-
-
     private lateinit var emvService: EmvService
 
     override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-        emvService = EmvService(flutterPluginBinding.applicationContext)
-        LibertyEmv.LibertyEmvApi.setup(flutterPluginBinding.binaryMessenger, emvService)
+        var model: String = Build.MODEL
+        Timber.tag(TAG).d("Device Model: $model")
+        if (model.uppercase() == "N86") {
+            emvService = NexgoEmvService(flutterPluginBinding.applicationContext)
+            LibertyEmv.LibertyEmvApi.setup(flutterPluginBinding.binaryMessenger, emvService as NexgoEmvService)
+        } else {
+            emvService = HorizonEmvService(flutterPluginBinding.applicationContext)
+            LibertyEmv.LibertyEmvApi.setup(flutterPluginBinding.binaryMessenger, emvService as HorizonEmvService)
+        }
     }
 
 
@@ -40,7 +38,7 @@ class LibertyEmvPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
 
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-        emvService.initialize(binding)
+        emvService.initializeService(binding)
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
     }
 
@@ -51,7 +49,7 @@ class LibertyEmvPlugin : FlutterPlugin, ActivityAware, MethodCallHandler {
     }
 
     override fun onDetachedFromActivity() {
-        emvService.activityBinding = null
+        emvService.closeService()
     }
 
 

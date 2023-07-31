@@ -73,4 +73,6 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     implementation project(path: ':horizon_isw')
     implementation project(path: ':pos_emv')
+    implementation project(path: ':nexgo-smartpos-sdk')
+    implementation project(path: ':liberty-nexgo-emv')
 }
