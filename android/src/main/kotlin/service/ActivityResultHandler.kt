@@ -2,10 +2,10 @@ package service
 
 import android.content.Intent
 import com.liberty.emv.liberty_emv.DeviceState
-import com.libertyPay.horizonSDK.common.ActivityRequestAndResultCodes
 import com.libertyPay.horizonSDK.common.TransactionIntentExtras
-import com.libertyPay.horizonSDK.domain.models.PosTransactionException
-import com.libertypay.posclient.remoteApi.models.response.TransactionData
+import com.libertyPay.posSdk.common.ActivityRequestAndResultCodes
+import com.libertyPay.posSdk.data.remote.models.response.TransactionData
+import com.libertyPay.posSdk.domain.models.PosTransactionException
 import io.flutter.plugins.LibertyEmv
 import service.dto.PigeonResponseDto
 

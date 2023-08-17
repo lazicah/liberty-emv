@@ -6,10 +6,10 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import com.liberty.emv.liberty_emv.Constants
 import com.liberty.emv.liberty_emv.DeviceState
-import com.libertyPay.horizonSDK.LibertyHorizonSDK
-import com.libertyPay.horizonSDK.domain.models.AccountType
 import com.libertyPay.horizonSDK.domain.models.RetrievalReferenceNumber
-import com.libertyPay.horizonSDK.domain.models.TransactionAmount
+import com.libertyPay.posSdk.LibertyPosSdk
+import com.libertyPay.posSdk.domain.models.AccountType
+import com.libertyPay.posSdk.domain.models.TransactionAmount
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugins.LibertyEmv
@@ -18,7 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class HorizonEmvService(private val context: Context) : LibertyEmv.LibertyEmvApi,
+class LibertyPosService(private val context: Context) : LibertyEmv.LibertyEmvApi,
     PluginRegistry.ActivityResultListener, EmvService {
 
     var activityBinding: ActivityPluginBinding? = null
@@ -37,13 +37,13 @@ class HorizonEmvService(private val context: Context) : LibertyEmv.LibertyEmvApi
     override fun enquireBalance(isOfflineTransaction: Boolean, accountType: LibertyEmv.AccountType, rrn: String, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
-            LibertyHorizonSDK.initialize(activityBinding!!.activity)
+            LibertyPosSdk.initialize(activityBinding!!.activity)
             resultCallback = result
             val accountTypeEnum =
                 Constants.accountTypeMapHorizon[accountType] ?: AccountType.DEFAULT_UNSPECIFIED
             if(isSdkInitialised) {
                 activityBinding?.activity?.let {
-                    LibertyHorizonSDK.startBalanceEnquiryDialogActivity(
+                    LibertyPosSdk.startBalanceEnquiryDialogActivity(
                             activity = it,
                             accountType = accountTypeEnum,
                             isOfflineTransaction = isOfflineTransaction,
@@ -62,7 +62,7 @@ class HorizonEmvService(private val context: Context) : LibertyEmv.LibertyEmvApi
 
             Timber.tag(TAG).d("initialize: sdk initializing")
             try {
-                LibertyHorizonSDK.initialize(activityBinding!!.activity)
+                LibertyPosSdk.initialize(activityBinding!!.activity)
                 isSdkInitialised = true
 
                 val keyExchangeResponse = LibertyEmv.TransactionDataResponse().apply {
@@ -80,14 +80,14 @@ class HorizonEmvService(private val context: Context) : LibertyEmv.LibertyEmvApi
     override fun purchase(amount: String, accountType: LibertyEmv.AccountType, rrn: String, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
-            LibertyHorizonSDK.initialize(activityBinding!!.activity)
+            LibertyPosSdk.initialize(activityBinding!!.activity)
             resultCallback = result
             val accountTypeEnum =
                 Constants.accountTypeMapHorizon[accountType] ?: AccountType.DEFAULT_UNSPECIFIED
 
             if(isSdkInitialised) {
                 activityBinding?.activity?.let {
-                    LibertyHorizonSDK.startPurchaseActivity(
+                    LibertyPosSdk.startPurchaseActivity(
                             activity = it,
                             transactionAmount = TransactionAmount(amount),
                             accountType = accountTypeEnum,
@@ -105,9 +105,9 @@ class HorizonEmvService(private val context: Context) : LibertyEmv.LibertyEmvApi
     override fun performKeyExchange(result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
-            LibertyHorizonSDK.initialize(activityBinding!!.activity)
+            LibertyPosSdk.initialize(activityBinding!!.activity)
             if(isSdkInitialised) {
-                val keyExchangeSuccess: Boolean = LibertyHorizonSDK.doKeyExchange()
+                val keyExchangeSuccess: Boolean = LibertyPosSdk.doKeyExchange()
 
                 if (keyExchangeSuccess) {
                     //Handle Success
@@ -138,7 +138,7 @@ class HorizonEmvService(private val context: Context) : LibertyEmv.LibertyEmvApi
         scope.launch {
             try {
                 val value = BitmapFactory.decodeByteArray(bitmap,0,bitmap.size)
-                LibertyHorizonSDK.print(value)
+                LibertyPosSdk.printReceipt(value)
                 val printResponse = LibertyEmv.TransactionDataResponse().apply {
                     deviceState = DeviceState.PRINTING_DONE.value
                     isSuccessful = true
