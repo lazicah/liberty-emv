@@ -9,6 +9,7 @@ import com.liberty.emv.liberty_emv.DeviceState
 import com.libertyPay.horizonSDK.domain.models.RetrievalReferenceNumber
 import com.libertyPay.posSdk.LibertyPosSdk
 import com.libertyPay.posSdk.domain.models.AccountType
+import com.libertyPay.posSdk.domain.models.Card
 import com.libertyPay.posSdk.domain.models.TransactionAmount
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.PluginRegistry
@@ -16,6 +17,7 @@ import io.flutter.plugins.LibertyEmv
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import service.dto.PigeonResponseDto
 import timber.log.Timber
 
 class LibertyPosService(private val context: Context) : LibertyEmv.LibertyEmvApi,
@@ -154,8 +156,18 @@ class LibertyPosService(private val context: Context) : LibertyEmv.LibertyEmvApi
                 }
                 result?.success(printResponse)
             }
+        }
+    }
 
-
+    override fun getCardDetails(result: LibertyEmv.Result<LibertyEmv.CardDetails>) {
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            LibertyPosSdk.initialize(activityBinding!!.activity)
+            val card: Card? = LibertyPosSdk.getCardDetails()
+            card?.let {
+                val cardDetails = PigeonResponseDto.toCardDetailsData(it)
+                result.success(cardDetails)
+            }
         }
     }
 

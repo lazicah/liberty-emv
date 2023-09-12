@@ -38,4 +38,8 @@ class LibertyEmv {
   Future<TransactionDataResponse> print(Uint8List bitmap) async {
     return _api.print(bitmap);
   }
+
+  Future<CardDetails?> getCardDetails() async {
+    return _api.getCardDetails();
+  }
 }

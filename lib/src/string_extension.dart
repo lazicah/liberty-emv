@@ -6,3 +6,8 @@ extension Stringify on TransactionDataResponse {
   }
 }
 
+extension StringifyCard on CardDetails {
+  String stringify() {
+    return 'CardDetails{primaryAccountNumber: $primaryAccountNumber, track1: $track1, track2: $track2, expiryDate: $expiryDate, serviceCode: $serviceCode, iccCardData: $iccCardData, cardSequenceNumber: $cardSequenceNumber, pinBlock: $pinBlock, cardSlotTypeEnum: $cardSlotTypeEnum, cardHolderName: $cardHolderName}';
+  }
+}

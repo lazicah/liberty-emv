@@ -439,6 +439,238 @@ public class LibertyEmv {
     }
   }
 
+  /** Generated class from Pigeon that represents data sent in messages. */
+  public static final class CardDetails {
+    private @Nullable String primaryAccountNumber;
+
+    public @Nullable String getPrimaryAccountNumber() {
+      return primaryAccountNumber;
+    }
+
+    public void setPrimaryAccountNumber(@Nullable String setterArg) {
+      this.primaryAccountNumber = setterArg;
+    }
+
+    private @Nullable String track1;
+
+    public @Nullable String getTrack1() {
+      return track1;
+    }
+
+    public void setTrack1(@Nullable String setterArg) {
+      this.track1 = setterArg;
+    }
+
+    private @Nullable String track2;
+
+    public @Nullable String getTrack2() {
+      return track2;
+    }
+
+    public void setTrack2(@Nullable String setterArg) {
+      this.track2 = setterArg;
+    }
+
+    private @Nullable String expiryDate;
+
+    public @Nullable String getExpiryDate() {
+      return expiryDate;
+    }
+
+    public void setExpiryDate(@Nullable String setterArg) {
+      this.expiryDate = setterArg;
+    }
+
+    private @Nullable String serviceCode;
+
+    public @Nullable String getServiceCode() {
+      return serviceCode;
+    }
+
+    public void setServiceCode(@Nullable String setterArg) {
+      this.serviceCode = setterArg;
+    }
+
+    private @Nullable String iccCardData;
+
+    public @Nullable String getIccCardData() {
+      return iccCardData;
+    }
+
+    public void setIccCardData(@Nullable String setterArg) {
+      this.iccCardData = setterArg;
+    }
+
+    private @Nullable String cardSequenceNumber;
+
+    public @Nullable String getCardSequenceNumber() {
+      return cardSequenceNumber;
+    }
+
+    public void setCardSequenceNumber(@Nullable String setterArg) {
+      this.cardSequenceNumber = setterArg;
+    }
+
+    private @Nullable String pinBlock;
+
+    public @Nullable String getPinBlock() {
+      return pinBlock;
+    }
+
+    public void setPinBlock(@Nullable String setterArg) {
+      this.pinBlock = setterArg;
+    }
+
+    private @Nullable String cardSlotTypeEnum;
+
+    public @Nullable String getCardSlotTypeEnum() {
+      return cardSlotTypeEnum;
+    }
+
+    public void setCardSlotTypeEnum(@Nullable String setterArg) {
+      this.cardSlotTypeEnum = setterArg;
+    }
+
+    private @Nullable String cardHolderName;
+
+    public @Nullable String getCardHolderName() {
+      return cardHolderName;
+    }
+
+    public void setCardHolderName(@Nullable String setterArg) {
+      this.cardHolderName = setterArg;
+    }
+
+    public static final class Builder {
+
+      private @Nullable String primaryAccountNumber;
+
+      public @NonNull Builder setPrimaryAccountNumber(@Nullable String setterArg) {
+        this.primaryAccountNumber = setterArg;
+        return this;
+      }
+
+      private @Nullable String track1;
+
+      public @NonNull Builder setTrack1(@Nullable String setterArg) {
+        this.track1 = setterArg;
+        return this;
+      }
+
+      private @Nullable String track2;
+
+      public @NonNull Builder setTrack2(@Nullable String setterArg) {
+        this.track2 = setterArg;
+        return this;
+      }
+
+      private @Nullable String expiryDate;
+
+      public @NonNull Builder setExpiryDate(@Nullable String setterArg) {
+        this.expiryDate = setterArg;
+        return this;
+      }
+
+      private @Nullable String serviceCode;
+
+      public @NonNull Builder setServiceCode(@Nullable String setterArg) {
+        this.serviceCode = setterArg;
+        return this;
+      }
+
+      private @Nullable String iccCardData;
+
+      public @NonNull Builder setIccCardData(@Nullable String setterArg) {
+        this.iccCardData = setterArg;
+        return this;
+      }
+
+      private @Nullable String cardSequenceNumber;
+
+      public @NonNull Builder setCardSequenceNumber(@Nullable String setterArg) {
+        this.cardSequenceNumber = setterArg;
+        return this;
+      }
+
+      private @Nullable String pinBlock;
+
+      public @NonNull Builder setPinBlock(@Nullable String setterArg) {
+        this.pinBlock = setterArg;
+        return this;
+      }
+
+      private @Nullable String cardSlotTypeEnum;
+
+      public @NonNull Builder setCardSlotTypeEnum(@Nullable String setterArg) {
+        this.cardSlotTypeEnum = setterArg;
+        return this;
+      }
+
+      private @Nullable String cardHolderName;
+
+      public @NonNull Builder setCardHolderName(@Nullable String setterArg) {
+        this.cardHolderName = setterArg;
+        return this;
+      }
+
+      public @NonNull CardDetails build() {
+        CardDetails pigeonReturn = new CardDetails();
+        pigeonReturn.setPrimaryAccountNumber(primaryAccountNumber);
+        pigeonReturn.setTrack1(track1);
+        pigeonReturn.setTrack2(track2);
+        pigeonReturn.setExpiryDate(expiryDate);
+        pigeonReturn.setServiceCode(serviceCode);
+        pigeonReturn.setIccCardData(iccCardData);
+        pigeonReturn.setCardSequenceNumber(cardSequenceNumber);
+        pigeonReturn.setPinBlock(pinBlock);
+        pigeonReturn.setCardSlotTypeEnum(cardSlotTypeEnum);
+        pigeonReturn.setCardHolderName(cardHolderName);
+        return pigeonReturn;
+      }
+    }
+
+    @NonNull
+    ArrayList<Object> toList() {
+      ArrayList<Object> toListResult = new ArrayList<Object>(10);
+      toListResult.add(primaryAccountNumber);
+      toListResult.add(track1);
+      toListResult.add(track2);
+      toListResult.add(expiryDate);
+      toListResult.add(serviceCode);
+      toListResult.add(iccCardData);
+      toListResult.add(cardSequenceNumber);
+      toListResult.add(pinBlock);
+      toListResult.add(cardSlotTypeEnum);
+      toListResult.add(cardHolderName);
+      return toListResult;
+    }
+
+    static @NonNull CardDetails fromList(@NonNull ArrayList<Object> list) {
+      CardDetails pigeonResult = new CardDetails();
+      Object primaryAccountNumber = list.get(0);
+      pigeonResult.setPrimaryAccountNumber((String) primaryAccountNumber);
+      Object track1 = list.get(1);
+      pigeonResult.setTrack1((String) track1);
+      Object track2 = list.get(2);
+      pigeonResult.setTrack2((String) track2);
+      Object expiryDate = list.get(3);
+      pigeonResult.setExpiryDate((String) expiryDate);
+      Object serviceCode = list.get(4);
+      pigeonResult.setServiceCode((String) serviceCode);
+      Object iccCardData = list.get(5);
+      pigeonResult.setIccCardData((String) iccCardData);
+      Object cardSequenceNumber = list.get(6);
+      pigeonResult.setCardSequenceNumber((String) cardSequenceNumber);
+      Object pinBlock = list.get(7);
+      pigeonResult.setPinBlock((String) pinBlock);
+      Object cardSlotTypeEnum = list.get(8);
+      pigeonResult.setCardSlotTypeEnum((String) cardSlotTypeEnum);
+      Object cardHolderName = list.get(9);
+      pigeonResult.setCardHolderName((String) cardHolderName);
+      return pigeonResult;
+    }
+  }
+
   public interface Result<T> {
     @SuppressWarnings("UnknownNullness")
     void success(T result);
@@ -455,6 +687,8 @@ public class LibertyEmv {
     protected Object readValueOfType(byte type, @NonNull ByteBuffer buffer) {
       switch (type) {
         case (byte) 128:
+          return CardDetails.fromList((ArrayList<Object>) readValue(buffer));
+        case (byte) 129:
           return TransactionDataResponse.fromList((ArrayList<Object>) readValue(buffer));
         default:
           return super.readValueOfType(type, buffer);
@@ -463,8 +697,11 @@ public class LibertyEmv {
 
     @Override
     protected void writeValue(@NonNull ByteArrayOutputStream stream, Object value) {
-      if (value instanceof TransactionDataResponse) {
+      if (value instanceof CardDetails) {
         stream.write(128);
+        writeValue(stream, ((CardDetails) value).toList());
+      } else if (value instanceof TransactionDataResponse) {
+        stream.write(129);
         writeValue(stream, ((TransactionDataResponse) value).toList());
       } else {
         super.writeValue(stream, value);
@@ -484,6 +721,8 @@ public class LibertyEmv {
     void performKeyExchange(@NonNull Result<TransactionDataResponse> result);
 
     void print(@NonNull byte[] bitmap, @NonNull Result<TransactionDataResponse> result);
+
+    void getCardDetails(@NonNull Result<CardDetails> result);
 
     /** The codec used by LibertyEmvApi. */
     static @NonNull MessageCodec<Object> getCodec() {
@@ -633,6 +872,33 @@ public class LibertyEmv {
                     };
 
                 api.print(bitmapArg, resultCallback);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.LibertyEmvApi.getCardDetails", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                Result<CardDetails> resultCallback =
+                    new Result<CardDetails>() {
+                      public void success(CardDetails result) {
+                        wrapped.add(0, result);
+                        reply.reply(wrapped);
+                      }
+
+                      public void error(Throwable error) {
+                        ArrayList<Object> wrappedError = wrapError(error);
+                        reply.reply(wrappedError);
+                      }
+                    };
+
+                api.getCardDetails(resultCallback);
               });
         } else {
           channel.setMessageHandler(null);

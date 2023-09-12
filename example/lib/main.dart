@@ -20,7 +20,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    LibertyEmv.instance.initialise(Environment.test);
+    LibertyEmv.instance.initialise(Environment.live);
     super.initState();
   }
 
@@ -42,6 +42,15 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  Future<void> getCardDetails() async {
+    try {
+      final response = await LibertyEmv.instance.getCardDetails();
+      print(response?.stringify());
+    } on PlatformException catch (e) {
+      print(e.code.substring(21));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -57,8 +66,8 @@ class _MyAppState extends State<MyApp> {
             children: [
               Text('Running on: $_platformVersion\n'),
               ElevatedButton(
-                onPressed: keyExchange,
-                child: Text("Key Exchange"),
+                onPressed: getCardDetails,
+                child: Text("GetCardDetails"),
               ),
             ],
           ),

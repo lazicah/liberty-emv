@@ -118,12 +118,81 @@ class TransactionDataResponse {
   }
 }
 
+class CardDetails {
+  CardDetails({
+    this.primaryAccountNumber,
+    this.track1,
+    this.track2,
+    this.expiryDate,
+    this.serviceCode,
+    this.iccCardData,
+    this.cardSequenceNumber,
+    this.pinBlock,
+    this.cardSlotTypeEnum,
+    this.cardHolderName,
+  });
+
+  String? primaryAccountNumber;
+
+  String? track1;
+
+  String? track2;
+
+  String? expiryDate;
+
+  String? serviceCode;
+
+  String? iccCardData;
+
+  String? cardSequenceNumber;
+
+  String? pinBlock;
+
+  String? cardSlotTypeEnum;
+
+  String? cardHolderName;
+
+  Object encode() {
+    return <Object?>[
+      primaryAccountNumber,
+      track1,
+      track2,
+      expiryDate,
+      serviceCode,
+      iccCardData,
+      cardSequenceNumber,
+      pinBlock,
+      cardSlotTypeEnum,
+      cardHolderName,
+    ];
+  }
+
+  static CardDetails decode(Object result) {
+    result as List<Object?>;
+    return CardDetails(
+      primaryAccountNumber: result[0] as String?,
+      track1: result[1] as String?,
+      track2: result[2] as String?,
+      expiryDate: result[3] as String?,
+      serviceCode: result[4] as String?,
+      iccCardData: result[5] as String?,
+      cardSequenceNumber: result[6] as String?,
+      pinBlock: result[7] as String?,
+      cardSlotTypeEnum: result[8] as String?,
+      cardHolderName: result[9] as String?,
+    );
+  }
+}
+
 class _LibertyEmvApiCodec extends StandardMessageCodec {
   const _LibertyEmvApiCodec();
   @override
   void writeValue(WriteBuffer buffer, Object? value) {
-    if (value is TransactionDataResponse) {
+    if (value is CardDetails) {
       buffer.putUint8(128);
+      writeValue(buffer, value.encode());
+    } else if (value is TransactionDataResponse) {
+      buffer.putUint8(129);
       writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
@@ -134,6 +203,8 @@ class _LibertyEmvApiCodec extends StandardMessageCodec {
   Object? readValueOfType(int type, ReadBuffer buffer) {
     switch (type) {
       case 128: 
+        return CardDetails.decode(readValue(buffer)!);
+      case 129: 
         return TransactionDataResponse.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
@@ -283,6 +354,28 @@ class LibertyEmvApi {
       );
     } else {
       return (replyList[0] as TransactionDataResponse?)!;
+    }
+  }
+
+  Future<CardDetails?> getCardDetails() async {
+    final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
+        'dev.flutter.pigeon.LibertyEmvApi.getCardDetails', codec,
+        binaryMessenger: _binaryMessenger);
+    final List<Object?>? replyList =
+        await channel.send(null) as List<Object?>?;
+    if (replyList == null) {
+      throw PlatformException(
+        code: 'channel-error',
+        message: 'Unable to establish connection on channel.',
+      );
+    } else if (replyList.length > 1) {
+      throw PlatformException(
+        code: replyList[0]! as String,
+        message: replyList[1] as String?,
+        details: replyList[2],
+      );
+    } else {
+      return (replyList[0] as CardDetails?);
     }
   }
 }

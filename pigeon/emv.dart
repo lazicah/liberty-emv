@@ -16,7 +16,6 @@ enum AccountType {
 
 enum Environment { live, test }
 
-
 class TransactionDataResponse {
   final String? amount;
 
@@ -65,7 +64,43 @@ class TransactionDataResponse {
     this.stan,
     this.terminalId,
     this.transactionType,
-    this.deviceState, this.isSuccessful,
+    this.deviceState,
+    this.isSuccessful,
+  );
+}
+
+class CardDetails {
+  final String? primaryAccountNumber;
+
+  final String? track1;
+
+  final String? track2;
+
+  final String? expiryDate;
+
+  final String? serviceCode;
+
+  final String? iccCardData;
+
+  final String? cardSequenceNumber;
+
+  final String? pinBlock;
+
+  final String? cardSlotTypeEnum;
+
+  final String? cardHolderName;
+
+  CardDetails(
+    this.primaryAccountNumber,
+    this.track1,
+    this.track2,
+    this.expiryDate,
+    this.serviceCode,
+    this.iccCardData,
+    this.cardSequenceNumber,
+    this.pinBlock,
+    this.cardSlotTypeEnum,
+    this.cardHolderName,
   );
 }
 
@@ -73,20 +108,27 @@ class TransactionDataResponse {
 abstract class LibertyEmvApi {
   @async
   TransactionDataResponse initialise(Environment environment);
+
   @async
   TransactionDataResponse enquireBalance(
     bool isOfflineTransaction,
     AccountType accountType,
     String rrn,
   );
+
   @async
   TransactionDataResponse purchase(
     String amount,
     AccountType accountType,
     String rrn,
   );
+
   @async
   TransactionDataResponse performKeyExchange();
+
   @async
   TransactionDataResponse print(Uint8List bitmap);
+
+  @async
+  CardDetails? getCardDetails();
 }
