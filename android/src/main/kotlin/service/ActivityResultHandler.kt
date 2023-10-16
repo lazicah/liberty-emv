@@ -2,8 +2,8 @@ package service
 
 import android.content.Intent
 import com.liberty.emv.liberty_emv.DeviceState
-import com.libertyPay.horizonSDK.common.TransactionIntentExtras
 import com.libertyPay.posSdk.common.ActivityRequestAndResultCodes
+import com.libertyPay.posSdk.common.TransactionIntentExtras
 import com.libertyPay.posSdk.data.remote.models.response.TransactionData
 import com.libertyPay.posSdk.domain.models.PosTransactionException
 import io.flutter.plugins.LibertyEmv
@@ -23,28 +23,13 @@ class ActivityResultHandler(
 
 
     private fun handleSuccessResponse(data: Intent?, resultCode: Int, requestCode: Int): Boolean {
-        when (requestCode) {
-            ActivityRequestAndResultCodes.PURCHASE_REQUEST_CODE -> {
-                val balanceEnquiryData =
-                    data?.getParcelableExtra<TransactionData?>(TransactionIntentExtras.TRANSACTION_RESULT)
+        val transactionSuccessDetails =
+                data?.getParcelableExtra<TransactionData?>(TransactionIntentExtras.TRANSACTION_RESULT)
 
-                balanceEnquiryData?.let {
-                    val emvResponse = PigeonResponseDto.toTransactionData(it)
-                    emvResponse.deviceState = DeviceState.TRANS_DONE.value
-                    resultCallback?.success(emvResponse)
-                }
-            }
-            else -> {
-                val balanceEnquiryData =
-                    data?.getParcelableExtra<TransactionData?>(TransactionIntentExtras.TRANSACTION_RESULT)
-
-                balanceEnquiryData?.let {
-                    val emvResponse = PigeonResponseDto.toTransactionData(it)
-                    emvResponse.deviceState = DeviceState.TRANS_DONE.value
-                    resultCallback?.success(emvResponse)
-                }
-
-            }
+        transactionSuccessDetails?.let {
+            val emvResponse = PigeonResponseDto.toTransactionData(it)
+            emvResponse.deviceState = DeviceState.TRANS_DONE.value
+            resultCallback?.success(emvResponse)
         }
         return true
     }
@@ -55,11 +40,13 @@ class ActivityResultHandler(
         resultCode: Int,
         requestCode: Int
     ): Boolean {
-        val posTransactionResponse =
-            data?.getParcelableExtra<PosTransactionException>(TransactionIntentExtras.TRANSACTION_FAILURE)
+        val transactionFailureDetails =
+                data?.getParcelableExtra<TransactionData?>(TransactionIntentExtras.TRANSACTION_RESULT)
 
-        posTransactionResponse?.let {
-            resultCallback?.error(Exception(it.errorMessage))
+        transactionFailureDetails?.let {
+            val emvResponse = PigeonResponseDto.toTransactionData(it)
+            emvResponse.deviceState = DeviceState.TRANS_FAILED.value
+            resultCallback?.success(emvResponse)
         }
         return true
     }
