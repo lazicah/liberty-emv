@@ -42,4 +42,8 @@ class LibertyEmv {
   Future<CardDetails?> getCardDetails() async {
     return _api.getCardDetails();
   }
+
+  void launchAppStore() {
+    _api.launchAppStore();
+  }
 }

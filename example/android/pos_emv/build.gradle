@@ -1,2 +1,2 @@
 configurations.maybeCreate("default")
-artifacts.add("default", file('liberty-pos-SDK-debug-1.9.10.aar'))
+artifacts.add("default", file('liberty-pos-SDK-release-2.0.2.aar'))

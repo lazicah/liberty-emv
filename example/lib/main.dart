@@ -52,6 +52,15 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  Future<void> launchAppStore() async {
+    print('Ca;;e');
+    try {
+      LibertyEmv.instance.launchAppStore();
+    } on PlatformException catch (e) {
+      print(e.code.substring(21));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -69,6 +78,13 @@ class _MyAppState extends State<MyApp> {
               ElevatedButton(
                 onPressed: getCardDetails,
                 child: Text("GetCardDetails"),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              ElevatedButton(
+                onPressed: launchAppStore,
+                child: Text("Launch App Store"),
               ),
             ],
           ),
