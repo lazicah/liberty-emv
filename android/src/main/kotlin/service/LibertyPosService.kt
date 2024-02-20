@@ -6,10 +6,10 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import com.liberty.emv.liberty_emv.Constants
 import com.liberty.emv.liberty_emv.DeviceState
-import com.libertyPay.horizonSDK.domain.models.RetrievalReferenceNumber
 import com.libertyPay.posSdk.LibertyPosSdk
 import com.libertyPay.posSdk.domain.models.AccountType
 import com.libertyPay.posSdk.domain.models.Card
+import com.libertyPay.posSdk.domain.models.RetrievalReferenceNumber
 import com.libertyPay.posSdk.domain.models.TransactionAmount
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.PluginRegistry
@@ -39,6 +39,7 @@ class LibertyPosService(private val context: Context) : LibertyEmv.LibertyEmvApi
     override fun enquireBalance(isOfflineTransaction: Boolean, accountType: LibertyEmv.AccountType, rrn: String, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
+
             LibertyPosSdk.initialize(activityBinding!!.activity)
             resultCallback = result
             val accountTypeEnum =
@@ -79,7 +80,7 @@ class LibertyPosService(private val context: Context) : LibertyEmv.LibertyEmvApi
 
     }
 
-    override fun purchase(amount: String, accountType: LibertyEmv.AccountType, rrn: String, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
+    override fun purchase(amount: Double, accountType: LibertyEmv.AccountType, rrn: String, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
             LibertyPosSdk.initialize(activityBinding!!.activity)
@@ -91,7 +92,7 @@ class LibertyPosService(private val context: Context) : LibertyEmv.LibertyEmvApi
                 activityBinding?.activity?.let {
                     LibertyPosSdk.startPurchaseActivity(
                             activity = it,
-                            transactionAmount = TransactionAmount(amount),
+                            transactionAmount = TransactionAmount(amount.toBigDecimal()),
                             accountType = accountTypeEnum,
                             retrievalReferenceNumber = RetrievalReferenceNumber(rrn)
                     )

@@ -24,7 +24,7 @@ class LibertyEmv {
   }
 
   Future<TransactionDataResponse> purchase(
-    String amount,
+    double amount,
     AccountType accountType,
     String rrn,
   ) async {

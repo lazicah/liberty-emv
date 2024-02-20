@@ -118,7 +118,7 @@ abstract class LibertyEmvApi {
 
   @async
   TransactionDataResponse purchase(
-    String amount,
+    double amount,
     AccountType accountType,
     String rrn,
   );

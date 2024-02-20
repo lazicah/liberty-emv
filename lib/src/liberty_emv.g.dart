@@ -276,7 +276,7 @@ class LibertyEmvApi {
     }
   }
 
-  Future<TransactionDataResponse> purchase(String arg_amount, AccountType arg_accountType, String arg_rrn) async {
+  Future<TransactionDataResponse> purchase(double arg_amount, AccountType arg_accountType, String arg_rrn) async {
     final BasicMessageChannel<Object?> channel = BasicMessageChannel<Object?>(
         'dev.flutter.pigeon.LibertyEmvApi.purchase', codec,
         binaryMessenger: _binaryMessenger);
