@@ -27,7 +27,15 @@ class _MyAppState extends State<MyApp> {
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> enquireBalance() async {
     final res = await LibertyEmv.instance
-        .enquireBalance(false, AccountType.savings, "123456789112");
+        .enquireBalance(false, AccountType.savings, "123456789132");
+
+    print(res);
+    print(res?.stringify());
+  }
+
+  Future<void> withdrawal() async {
+    final res = await LibertyEmv.instance
+        .purchase(100, AccountType.savings, "323456789132");
 
     print(res);
     print(res?.stringify());
@@ -85,6 +93,27 @@ class _MyAppState extends State<MyApp> {
               ElevatedButton(
                 onPressed: launchAppStore,
                 child: Text("Launch App Store"),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              ElevatedButton(
+                onPressed: keyExchange,
+                child: Text("Keyexchange"),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              ElevatedButton(
+                onPressed: enquireBalance,
+                child: Text("Balance check"),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              ElevatedButton(
+                onPressed: withdrawal,
+                child: Text("Withdrawal"),
               ),
             ],
           ),
