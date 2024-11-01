@@ -42,12 +42,17 @@ class ActivityResultHandler(
     ): Boolean {
         val transactionFailureDetails =
                 data?.getParcelableExtra<TransactionData?>(TransactionIntentExtras.TRANSACTION_RESULT)
-
-        transactionFailureDetails?.let {
-            val emvResponse = PigeonResponseDto.toTransactionData(it)
-            emvResponse.deviceState = DeviceState.TRANS_FAILED.value
-            resultCallback?.success(emvResponse)
+        println("Transaction Failure Response: $transactionFailureDetails")
+        if(transactionFailureDetails != null){
+            transactionFailureDetails.let {
+                val emvResponse = PigeonResponseDto.toTransactionData(it)
+                emvResponse.deviceState = DeviceState.TRANS_FAILED.value
+                resultCallback?.success(emvResponse)
+            }
+        }else {
+            resultCallback?.error(Exception("Transaction Failed"))
         }
+
         return true
     }
 
@@ -78,6 +83,7 @@ class ActivityResultHandler(
     }
 
     operator fun invoke(data: Intent?, resultCode: Int, requestCode: Int): Boolean {
+        println("Activity Result Code: $resultCode")
         val handlerFunction = functionMap[resultCode]
         return handlerFunction?.invoke(data, resultCode, requestCode) ?: false
     }

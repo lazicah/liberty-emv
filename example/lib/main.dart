@@ -26,16 +26,19 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> enquireBalance() async {
-    final res = await LibertyEmv.instance
-        .enquireBalance(false, AccountType.savings, "123456789132");
-
-    print(res);
-    print(res?.stringify());
+    try {
+      final res = await LibertyEmv.instance
+          .enquireBalance(false, AccountType.savings, "123456789132");
+      print(res);
+      print(res?.stringify());
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> withdrawal() async {
     final res = await LibertyEmv.instance
-        .purchase(100, AccountType.savings, "323456789132");
+        .purchase(10, AccountType.savings, "323456789132");
 
     print(res);
     print(res?.stringify());

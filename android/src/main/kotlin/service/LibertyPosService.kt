@@ -173,7 +173,7 @@ class LibertyPosService(private val context: Context) : LibertyEmv.LibertyEmvApi
     }
 
     override fun launchAppStore() {
-        LibertyPosSdk.launchHorizonPayAppStore(context);
+        LibertyPosSdk.launchAppStore(context);
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
