@@ -1,6 +1,6 @@
 package service.dto
 
-import com.libertyPay.posSdk.data.remote.models.response.BalanceEnquiryResponseData
+
 import com.libertyPay.posSdk.data.remote.models.response.TransactionData
 import com.libertyPay.posSdk.domain.models.Card
 import io.flutter.plugins.LibertyEmv
