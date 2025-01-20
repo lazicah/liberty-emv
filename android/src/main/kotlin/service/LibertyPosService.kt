@@ -11,6 +11,9 @@ import com.libertyPay.posSdk.domain.models.AccountType
 import com.libertyPay.posSdk.domain.models.Card
 import com.libertyPay.posSdk.domain.models.RetrievalReferenceNumber
 import com.libertyPay.posSdk.domain.models.TransactionAmount
+import com.nexgo.external.utils.DeviceHelper
+import com.nexgo.oaf.apiv3.DeviceEngine
+import com.nexgo.oaf.apiv3.DeviceInfo
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
 import io.flutter.plugin.common.PluginRegistry
 import io.flutter.plugins.LibertyEmv

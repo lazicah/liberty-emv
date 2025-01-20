@@ -56,7 +56,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> getCardDetails() async {
-    print('Ca;;e');
     try {
       final response = await LibertyEmv.instance.getCardDetails();
       print(response?.stringify());
