@@ -27,11 +27,14 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
     compileSdkVersion 34
-    ndkVersion flutter.ndkVersion
+    ndkVersion = "25.1.8937393"
+    //Add this line
+    namespace("com.liberty.emv.liberty_emv_example")
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+        coreLibraryDesugaringEnabled true
     }
 
     packagingOptions {
@@ -39,7 +42,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = '11'
+        jvmTarget = '17'
     }
 
     sourceSets {
@@ -78,4 +81,5 @@ dependencies {
     implementation project(path: ':horizon_isw')
     implementation project(path: ':pos_emv')
     implementation project(path: ':nexgo-smartpos-sdk')
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
 }
