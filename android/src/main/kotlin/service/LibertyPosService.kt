@@ -175,6 +175,17 @@ class LibertyPosService(private val context: Context) : LibertyEmv.LibertyEmvApi
         }
     }
 
+    override fun getSerialNo(result: LibertyEmv.Result<String>) {
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            LibertyPosSdk.initialize(activityBinding!!.activity)
+            val serial = LibertyPosSdk.getDeviceSerialNumber()
+            serial?.let {
+                result.success(serial)
+            }
+        }
+    }
+
     override fun launchAppStore() {
         LibertyPosSdk.launchAppStore(context);
     }

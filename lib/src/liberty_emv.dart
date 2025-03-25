@@ -43,6 +43,10 @@ class LibertyEmv {
     return _api.getCardDetails();
   }
 
+  Future<String?> getSerialNo() async {
+    return _api.getSerialNo();
+  }
+
   void launchAppStore() {
     _api.launchAppStore();
   }

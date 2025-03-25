@@ -724,6 +724,8 @@ public class LibertyEmv {
 
     void getCardDetails(@NonNull Result<CardDetails> result);
 
+    void getSerialNo(@NonNull Result<String> result);
+
     void launchAppStore();
 
     /** The codec used by LibertyEmvApi. */
@@ -901,6 +903,33 @@ public class LibertyEmv {
                     };
 
                 api.getCardDetails(resultCallback);
+              });
+        } else {
+          channel.setMessageHandler(null);
+        }
+      }
+      {
+        BasicMessageChannel<Object> channel =
+            new BasicMessageChannel<>(
+                binaryMessenger, "dev.flutter.pigeon.LibertyEmvApi.getSerialNo", getCodec());
+        if (api != null) {
+          channel.setMessageHandler(
+              (message, reply) -> {
+                ArrayList<Object> wrapped = new ArrayList<Object>();
+                Result<String> resultCallback =
+                    new Result<String>() {
+                      public void success(String result) {
+                        wrapped.add(0, result);
+                        reply.reply(wrapped);
+                      }
+
+                      public void error(Throwable error) {
+                        ArrayList<Object> wrappedError = wrapError(error);
+                        reply.reply(wrappedError);
+                      }
+                    };
+
+                api.getSerialNo(resultCallback);
               });
         } else {
           channel.setMessageHandler(null);

@@ -132,5 +132,8 @@ abstract class LibertyEmvApi {
   @async
   CardDetails? getCardDetails();
 
+  @async
+  String? getSerialNo();
+
   void launchAppStore();
 }

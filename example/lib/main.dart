@@ -64,6 +64,15 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  Future<void> getSerialNo() async {
+    try {
+      final response = await LibertyEmv.instance.getSerialNo();
+      print(response);
+    } on PlatformException catch (e) {
+      print(e.code.substring(21));
+    }
+  }
+
   Future<void> launchAppStore() async {
     print('Ca;;e');
     try {
@@ -118,6 +127,13 @@ class _MyAppState extends State<MyApp> {
               ElevatedButton(
                 onPressed: withdrawal,
                 child: Text("Withdrawal"),
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              ElevatedButton(
+                onPressed: getSerialNo,
+                child: Text("Serial No"),
               ),
             ],
           ),
