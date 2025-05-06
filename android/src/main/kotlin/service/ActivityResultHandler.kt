@@ -5,8 +5,8 @@ import com.liberty.emv.liberty_emv.DeviceState
 import com.libertyPay.posSdk.common.ActivityRequestAndResultCodes
 import com.libertyPay.posSdk.common.TransactionIntentExtras
 import com.libertyPay.posSdk.data.remote.models.response.TransactionData
-import com.libertyPay.posSdk.domain.models.PosTransactionException
 import io.flutter.plugins.LibertyEmv
+import io.flutter.plugins.LibertyEmv.FlutterError
 import service.dto.PigeonResponseDto
 
 class ActivityResultHandler(
@@ -24,7 +24,7 @@ class ActivityResultHandler(
 
     private fun handleSuccessResponse(data: Intent?, resultCode: Int, requestCode: Int): Boolean {
         val transactionSuccessDetails =
-                data?.getParcelableExtra<TransactionData?>(TransactionIntentExtras.TRANSACTION_RESULT)
+            data?.getParcelableExtra<TransactionData?>(TransactionIntentExtras.TRANSACTION_RESULT)
 
         transactionSuccessDetails?.let {
             val emvResponse = PigeonResponseDto.toTransactionData(it)
@@ -41,16 +41,16 @@ class ActivityResultHandler(
         requestCode: Int
     ): Boolean {
         val transactionFailureDetails =
-                data?.getParcelableExtra<TransactionData?>(TransactionIntentExtras.TRANSACTION_RESULT)
-        println("Transaction Failure Response: $transactionFailureDetails")
-        if(transactionFailureDetails != null){
+            data?.getParcelableExtra<TransactionData?>(TransactionIntentExtras.TRANSACTION_RESULT)
+        val errorMessage = data?.getStringExtra("error_message")
+        if (transactionFailureDetails != null) {
             transactionFailureDetails.let {
                 val emvResponse = PigeonResponseDto.toTransactionData(it)
                 emvResponse.deviceState = DeviceState.TRANS_FAILED.value
                 resultCallback?.success(emvResponse)
             }
-        }else {
-            resultCallback?.error(Exception("Transaction Failed"))
+        } else {
+            resultCallback?.error(FlutterError(resultCode.toString(), errorMessage, null))
         }
 
         return true
@@ -61,12 +61,8 @@ class ActivityResultHandler(
         resultCode: Int,
         requestCode: Int
     ): Boolean {
-        val keyExchangeException =
-            data?.getParcelableExtra<PosTransactionException>(TransactionIntentExtras.KEY_EXCHANGE_FAILURE)
-
-        keyExchangeException?.let {
-            resultCallback?.error(Exception(it.errorMessage))
-        }
+        val errorMessage = data?.getStringExtra("error_message")
+        resultCallback?.error(FlutterError(resultCode.toString(), errorMessage, null))
         return true
     }
 

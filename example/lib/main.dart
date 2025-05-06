@@ -33,17 +33,35 @@ class _MyAppState extends State<MyApp> {
           DateTime.now().millisecondsSinceEpoch.toString().substring(0, 12));
       print(res);
       print(res?.stringify());
+    } on PlatformException catch (e) {
+      // Handle platform-specific error
+      print('PlatformException caught:');
+      print('Code: ${e.code}');
+      print('Message: ${e.message}');
+      print('Details: ${e.details}');
     } catch (e) {
-      print(e);
+      // Handle any other errors
+      print('Other exception: $e');
     }
   }
 
   Future<void> withdrawal() async {
-    final res = await LibertyEmv.instance
-        .purchase(10, AccountType.savings, "323456789132");
+    try {
+      final res = await LibertyEmv.instance
+          .purchase(10000000000, AccountType.savings, "323456789132");
 
-    print(res);
-    print(res?.stringify());
+      print(res);
+      print(res?.stringify());
+    } on PlatformException catch (e) {
+      // Handle platform-specific error
+      print('PlatformException caught:');
+      print('Code: ${e.code}');
+      print('Message: ${e.message}');
+      print('Details: ${e.details}');
+    } catch (e) {
+      // Handle any other errors
+      print('Other exception: $e');
+    }
   }
 
   Future<void> keyExchange() async {
