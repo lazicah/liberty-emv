@@ -16,6 +16,29 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+        title: 'Plugin example app',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        debugShowCheckedModeBanner: false,
+        localizationsDelegates: const [
+          DefaultMaterialLocalizations.delegate,
+        ],
+        home: const AppBodyWidget());
+  }
+}
+
+class AppBodyWidget extends StatefulWidget {
+  const AppBodyWidget({super.key});
+
+  @override
+  State<AppBodyWidget> createState() => _AppBodyWidgetState();
+}
+
+class _AppBodyWidgetState extends State<AppBodyWidget> {
   String _platformVersion = 'Unknown';
 
   @override
@@ -67,18 +90,24 @@ class _MyAppState extends State<MyApp> {
   Future<void> keyExchange() async {
     try {
       final response = await LibertyEmv.instance.performKeyExchange();
-      print(response?.stringify());
+      print(response.stringify());
+      ScaffoldMessenger.of(context)
+        ..showSnackBar(
+            SnackBar(content: Text(response.responseMessage ?? "NA")));
     } on PlatformException catch (e) {
-      print(e.code.substring(21));
+      print(e.message);
     }
   }
 
   Future<void> getCardDetails() async {
+    print('Get Card details');
     try {
       final response = await LibertyEmv.instance.getCardDetails();
       print(response?.stringify());
+      print('Card response caught:');
     } on PlatformException catch (e) {
-      print(e.code.substring(21));
+      print(e.message);
+      print('PlatformException caught:');
     }
   }
 
@@ -87,7 +116,7 @@ class _MyAppState extends State<MyApp> {
       final response = await LibertyEmv.instance.getSerialNo();
       print(response);
     } on PlatformException catch (e) {
-      print(e.code.substring(21));
+      print(e.message);
     }
   }
 
@@ -96,65 +125,63 @@ class _MyAppState extends State<MyApp> {
     try {
       LibertyEmv.instance.launchAppStore();
     } on PlatformException catch (e) {
-      print(e.code.substring(21));
+      print(e.message);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: enquireBalance,
-        ),
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Column(
-            children: [
-              Text('Running on: $_platformVersion\n'),
-              ElevatedButton(
-                onPressed: getCardDetails,
-                child: Text("GetCardDetails"),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              ElevatedButton(
-                onPressed: launchAppStore,
-                child: Text("Launch App Store"),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              ElevatedButton(
-                onPressed: keyExchange,
-                child: Text("Keyexchange"),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              ElevatedButton(
-                onPressed: enquireBalance,
-                child: Text("Balance check"),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              ElevatedButton(
-                onPressed: withdrawal,
-                child: Text("Withdrawal"),
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              ElevatedButton(
-                onPressed: getSerialNo,
-                child: Text("Serial No"),
-              ),
-            ],
-          ),
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: enquireBalance,
+      ),
+      appBar: AppBar(
+        title: const Text('Plugin example app'),
+      ),
+      body: Center(
+        child: Column(
+          children: [
+            Text('Running on: $_platformVersion\n'),
+            ElevatedButton(
+              onPressed: getCardDetails,
+              child: const Text("GetCardDetails"),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(
+              onPressed: launchAppStore,
+              child: const Text("Launch App Store"),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(
+              onPressed: keyExchange,
+              child: const Text("Keyexchange"),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(
+              onPressed: enquireBalance,
+              child: const Text("Balance check"),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(
+              onPressed: withdrawal,
+              child: const Text("Withdrawal"),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            ElevatedButton(
+              onPressed: getSerialNo,
+              child: const Text("Serial No"),
+            ),
+          ],
         ),
       ),
     );

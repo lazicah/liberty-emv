@@ -39,7 +39,12 @@ class LibertyPosService(private val context: Context) : LibertyEmv.LibertyEmvApi
         activityBinding = null;
     }
 
-    override fun enquireBalance(isOfflineTransaction: Boolean, accountType: LibertyEmv.AccountType, rrn: String, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
+    override fun enquireBalance(
+        isOfflineTransaction: Boolean,
+        accountType: LibertyEmv.AccountType,
+        rrn: String,
+        result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>
+    ) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
 
@@ -47,13 +52,13 @@ class LibertyPosService(private val context: Context) : LibertyEmv.LibertyEmvApi
             resultCallback = result
             val accountTypeEnum =
                 Constants.accountTypeMapHorizon[accountType] ?: AccountType.DEFAULT_UNSPECIFIED
-            if(isSdkInitialised) {
+            if (isSdkInitialised) {
                 activityBinding?.activity?.let {
                     LibertyPosSdk.startBalanceEnquiryDialogActivity(
-                            activity = it,
-                            accountType = accountTypeEnum,
-                            isOfflineTransaction = isOfflineTransaction,
-                            retrievalReferenceNumber = RetrievalReferenceNumber(rrn)
+                        activity = it,
+                        accountType = accountTypeEnum,
+                        isOfflineTransaction = isOfflineTransaction,
+                        retrievalReferenceNumber = RetrievalReferenceNumber(rrn)
                     )
                 }
             } else {
@@ -63,27 +68,35 @@ class LibertyPosService(private val context: Context) : LibertyEmv.LibertyEmvApi
 
     }
 
-    override fun initialise(environment: LibertyEmv.Environment, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
+    override fun initialise(
+        environment: LibertyEmv.Environment,
+        result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>
+    ) {
 
 
-            Timber.tag(TAG).d("initialize: sdk initializing")
-            try {
-                LibertyPosSdk.initialize(activityBinding!!.activity)
-                isSdkInitialised = true
+        Timber.tag(TAG).d("initialize: sdk initializing")
+        try {
+            LibertyPosSdk.initialize(activityBinding!!.activity)
+            isSdkInitialised = true
 
-                val keyExchangeResponse = LibertyEmv.TransactionDataResponse().apply {
-                    deviceState = DeviceState.SUCCESSFUL.value
-                    responseMessage = "Initialised"
-                }
-                result.success(keyExchangeResponse)
-            } catch (e: Exception) {
-                Timber.tag(TAG).d("initialize error: %s", e.message)
+            val keyExchangeResponse = LibertyEmv.TransactionDataResponse().apply {
+                deviceState = DeviceState.SUCCESSFUL.value
+                responseMessage = "Initialised"
             }
+            result.success(keyExchangeResponse)
+        } catch (e: Exception) {
+            Timber.tag(TAG).d("initialize error: %s", e.message)
+        }
 
 
     }
 
-    override fun purchase(amount: Double, accountType: LibertyEmv.AccountType, rrn: String, result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
+    override fun purchase(
+        amount: Double,
+        accountType: LibertyEmv.AccountType,
+        rrn: String,
+        result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>
+    ) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
             LibertyPosSdk.initialize(activityBinding!!.activity)
@@ -91,16 +104,16 @@ class LibertyPosService(private val context: Context) : LibertyEmv.LibertyEmvApi
             val accountTypeEnum =
                 Constants.accountTypeMapHorizon[accountType] ?: AccountType.DEFAULT_UNSPECIFIED
 
-            if(isSdkInitialised) {
+            if (isSdkInitialised) {
                 activityBinding?.activity?.let {
                     LibertyPosSdk.startPurchaseActivity(
-                            activity = it,
-                            transactionAmount = TransactionAmount(amount.toBigDecimal()),
-                            accountType = accountTypeEnum,
-                            retrievalReferenceNumber = RetrievalReferenceNumber(rrn)
+                        activity = it,
+                        transactionAmount = TransactionAmount(amount.toBigDecimal()),
+                        accountType = accountTypeEnum,
+                        retrievalReferenceNumber = RetrievalReferenceNumber(rrn)
                     )
                 }
-            }else {
+            } else {
                 Timber.tag(TAG).d("Have you called [initialise]?")
             }
         }
@@ -112,10 +125,10 @@ class LibertyPosService(private val context: Context) : LibertyEmv.LibertyEmvApi
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
             LibertyPosSdk.initialize(activityBinding!!.activity)
-            if(isSdkInitialised) {
-                val keyExchangeSuccess: Boolean = LibertyPosSdk.doKeyExchange()
+            if (isSdkInitialised) {
+                val keyExchangeResult: String = LibertyPosSdk.doKeyExchange()
 
-                if (keyExchangeSuccess) {
+                if (keyExchangeResult.equals("success")) {
                     //Handle Success
                     val keyExchangeResponse = LibertyEmv.TransactionDataResponse().apply {
                         deviceState = DeviceState.SUCCESSFUL.value
@@ -128,22 +141,25 @@ class LibertyPosService(private val context: Context) : LibertyEmv.LibertyEmvApi
                     val keyExchangeResponse = LibertyEmv.TransactionDataResponse().apply {
                         deviceState = DeviceState.ERROR.value
                         isSuccessful = false
-                        responseMessage = "Key exchange service currently unavailable"
+                        responseMessage = keyExchangeResult
                     }
                     result.success(keyExchangeResponse)
                 }
-            }else {
+            } else {
                 Timber.tag(TAG).d("Have you called [initialise]?")
             }
 
         }
     }
 
-    override fun print(bitmap: ByteArray, result:LibertyEmv.Result<LibertyEmv.TransactionDataResponse>) {
+    override fun print(
+        bitmap: ByteArray,
+        result: LibertyEmv.Result<LibertyEmv.TransactionDataResponse>
+    ) {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
             try {
-                val value = BitmapFactory.decodeByteArray(bitmap,0,bitmap.size)
+                val value = BitmapFactory.decodeByteArray(bitmap, 0, bitmap.size)
                 LibertyPosSdk.printReceipt(value)
                 val printResponse = LibertyEmv.TransactionDataResponse().apply {
                     deviceState = DeviceState.PRINTING_DONE.value
@@ -151,7 +167,7 @@ class LibertyPosService(private val context: Context) : LibertyEmv.LibertyEmvApi
                     responseMessage = "Printed"
                 }
                 result?.success(printResponse)
-            } catch (e : Exception){
+            } catch (e: Exception) {
                 Timber.tag(TAG).e("Printing Error: ${e.message}")
                 val printResponse = LibertyEmv.TransactionDataResponse().apply {
                     deviceState = DeviceState.PRINTING_FAILED.value
