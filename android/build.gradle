@@ -104,7 +104,7 @@ dependencies {
     ksp "androidx.room:room-compiler:$roomVersion"
     implementation "androidx.room:room-paging:$roomVersion"
 
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
 
     //Used for encrypted SharedPrefs
     implementation "androidx.security:security-crypto-ktx:1.1.0-alpha03"
