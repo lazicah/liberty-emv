@@ -33,8 +33,6 @@ allprojects {
     }
 }
 
-
-
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'org.jetbrains.kotlin.android'
@@ -42,12 +40,14 @@ apply plugin: 'com.google.devtools.ksp'
 
 
 android {
-    compileSdkVersion 34
+    namespace = "com.liberty.emv.liberty_emv"
+
+    compileSdk = 36
 
     compileOptions {
+        coreLibraryDesugaringEnabled = true
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
-        coreLibraryDesugaringEnabled = true
     }
 
     kotlinOptions {
@@ -55,11 +55,12 @@ android {
     }
 
     sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
+        main.java.srcDirs += "src/main/kotlin"
+        test.java.srcDirs += "src/test/kotlin"
     }
 
     defaultConfig {
-        minSdkVersion 23
+        minSdk = 24
     }
 }
 
